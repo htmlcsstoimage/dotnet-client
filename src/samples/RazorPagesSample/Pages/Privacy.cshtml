@@ -1,10 +1,15 @@
 ﻿@page
+@using HtmlCssToImage.Models.Requests
 @model PrivacyModel
 @{
     ViewData["Title"] = "Privacy Policy";
     var ImageRequest = new HtmlCssToImage.Models.Requests.CreateUrlImageRequest()
     {
-        Url = "https://thiswebsite.com"
+        Url = "https://thiswebsite.com/_social/privacy",
+        Selector = "#shot",
+        ViewportWidth = 800,
+        ViewportHeight = 400,
+        DeviceScale = 1.5
     };
 }
 @section HCTIMetaTags{
