@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/BuildItems/">
+    <File Path="Directory.Build.props" />
+    <File Path="src\Directory.Build.props" />
+    <File Path="src\samples\Directory.Build.props" />
+  </Folder>
+  <Folder Name="/Samples/">
+    <Project Path="src/samples/BlazorStaticServerSample/BlazorStaticServerSample.csproj" />
+    <Project Path="src/samples/RazorPagesSample/RazorPagesSample.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="src/tests/HtmlCssToImage.Tests/HtmlCssToImage.Tests.csproj" />
+  </Folder>
+  <Project Path="src/HtmlCssToImage.Blazor/HtmlCssToImage.Blazor.csproj" />
+  <Project Path="src/HtmlCssToImage.DependencyInjection/HtmlCssToImage.DependencyInjection.csproj" />
+  <Project Path="src/HtmlCssToImage.TagHelpers/HtmlCssToImage.TagHelpers.csproj" />
+  <Project Path="src/HtmlCssToImage/HtmlCssToImage.csproj" />
+</Solution>

@@ -1,0 +1,32 @@
+<Project>
+
+    <PropertyGroup>
+        <Company>Code Happy, LLC</Company>
+        <Authors>Code Happy, LLC</Authors>
+        <Product>HTML/CSS To Image API</Product>
+        <Copyright>Copyright © Code Happy, LLC</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/htmlcsstoimage/dotnet-client</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/htmlcsstoimage/dotnet-client</PackageProjectUrl>
+
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <DebugType>embedded</DebugType>
+
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <PackageIcon>logo-180x180.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+
+</Project>

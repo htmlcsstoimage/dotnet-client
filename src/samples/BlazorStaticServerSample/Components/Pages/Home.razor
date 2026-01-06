@@ -1,0 +1,10 @@
+﻿@page "/"
+@using System.Text.Json.Nodes
+@using HtmlCssToImage.Blazor
+
+<PageTitle>Home</PageTitle>
+<HCTI_Templated_OgMetaTag
+    TemplateId="t-fake-template-id" TemplateValues="@(new JsonObject(){["title"]="HOME PAGE"})"></HCTI_Templated_OgMetaTag>
+<h1>Hello, world!</h1>
+
+Welcome to your new app.

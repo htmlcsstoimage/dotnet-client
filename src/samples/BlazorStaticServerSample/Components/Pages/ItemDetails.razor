@@ -1,0 +1,31 @@
+@page "/item/{id:long}"
+@using HtmlCssToImage.Blazor
+@if (Item != null)
+{
+    <HCTI_Templated_OgMetaTag TemplateValues="Item" TemplateId="t-fake-template"></HCTI_Templated_OgMetaTag>
+    <HCTI_Templated_OgMetaTag TemplateValues="Item" TemplateId="t-fake-template" OgMetaType="twitter:image"></HCTI_Templated_OgMetaTag>
+}
+<h3>ItemDetails</h3>
+@if (Item == null)
+{
+    <b>Invalid Item ID</b>
+}
+else
+{
+    <p>Name - @Item.Name</p>
+    <p>Quantity - @Item.Quantity</p>
+}
+
+@code {
+    [Parameter] public long id { get; set; }
+    public ItemDetail? Item { get; set; }
+    protected override void OnInitialized()
+    {
+        if (BlazorStaticServerSample.ItemDetails.Items.TryGetValue(id, out var matched_item))
+        {
+            Item = matched_item;
+        }
+        base.OnInitialized();
+    }
+
+}

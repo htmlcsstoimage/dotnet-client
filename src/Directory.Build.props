@@ -1,0 +1,6 @@
+<Project>
+
+    <ItemGroup>
+        <None Include="../../logo-180x180.png" Pack="true" PackagePath="\" />
+    </ItemGroup>
+</Project>

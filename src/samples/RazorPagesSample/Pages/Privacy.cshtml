@@ -1,0 +1,16 @@
+﻿@page
+@model PrivacyModel
+@{
+    ViewData["Title"] = "Privacy Policy";
+    var ImageRequest = new HtmlCssToImage.Models.Requests.CreateUrlImageRequest()
+    {
+        Url = "https://thiswebsite.com"
+    };
+}
+@section HCTIMetaTags{
+    <hcti-og-url image-request="@ImageRequest"/>
+    <hcti-og-url image-request="@ImageRequest" og-meta-type="twitter:image"/>
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Use this page to detail your site's privacy policy.</p>
