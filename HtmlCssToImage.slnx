@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/BuildItems/">
     <File Path="Directory.Build.props" />
+    <File Path="README.md" />
     <File Path="src\Directory.Build.props" />
     <File Path="src\samples\Directory.Build.props" />
   </Folder>

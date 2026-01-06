@@ -1,4 +1,4 @@
-# HTML/CSS to Image Dotnet Client - Dependency Injection
+# [HTML/CSS to Image](https://htmlcsstoimage.com/) Dotnet Client - Dependency Injection
 
 This package provides dependency injection support for the HtmlCssToImage client.
 
@@ -28,6 +28,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddHtmlCssToImage("api_id", "api_key");
     }
+}
 ```
 
 #### Action-based Configuration
@@ -42,9 +43,10 @@ public class Program
         builder.Services.AddHtmlCssToImage(options =>
         {
             options.ApiId = Environment.GetEnvironmentVariable("HCTI_API_ID")!;
-            options.ApiKey = Environment.GetEnvironmentVariable("HCTI_API_KEY")!
+            options.ApiKey = Environment.GetEnvironmentVariable("HCTI_API_KEY")!;
         });
-    } 
+    }
+}
 ```
 
 #### Standard dotnet Configuration
@@ -65,7 +67,7 @@ In this case, your configuration should look like this:
     "ApiId": "api_id",
     "ApiKey": "api_key"
   }
-  }
+}
 ```
 
 See [HtmlCssToImageOptions.cs](../HtmlCssToImage/Models/HtmlCssToImageOptions.cs) for the Configuration object 
@@ -74,3 +76,11 @@ See [HtmlCssToImageOptions.cs](../HtmlCssToImage/Models/HtmlCssToImageOptions.cs
 Because the HtmlCssToImage client is added to the DI container as a typed HTTP Client (see [Microsoft Docs](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests#typed-clients)) it means you can extend its default behavior, such as adding retry policies or logging. 
 
 All the `.AddHtmlCssToImage()` methods return an `IHttpClientBuilder` which allows you to configure the underlying `HttpClient` instance.
+
+---
+
+> [!IMPORTANT]
+> Check out the [HTML/CSS To Image Docs](https://docs.htmlcsstoimage.com) for more details on the API's capabilities.
+
+> [!TIP]
+> Get started for free at [htmlcsstoimage.com](https://htmlcsstoimage.com).

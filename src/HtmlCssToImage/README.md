@@ -1,4 +1,4 @@
-# HTML/CSS to Image Dotnet Client
+# [HTML/CSS to Image](https://htmlcsstoimage.com/) Dotnet Client
 
 This package provides a .NET client for the HTML/CSS to Image API, allowing you to generate images from HTML/CSS content directly from your .NET applications.
 
@@ -94,3 +94,22 @@ These URLs are tied to the API Key & API Id you provide when creating the client
 
 These methods are handy when you have a lot of content that may never be rendered, and want to render on-demand, as to not waste your image credits.
 
+
+## Other Packages
+
+### HtmlCssToImage.DependencyInjection
+Use [HtmlCssToImage.DependencyInjection](../HtmlCssToImage.DependencyInjection/README.md) to integrate the HtmlCssToImage client into your ASP.NET Core application.
+
+### HtmlCssToImage.Blazor
+Use [HtmlCssToImage.Blazor](../HtmlCssToImage.Blazor/README.md) to generate OG image tags using HCTI links in Blazor applications.
+
+### HtmlCssToImage.TagHelpers
+Use [HtmlCssToImage.TagHelpers](../HtmlCssToImage.TagHelpers/README.md) to generate OG image tags in ASP.NET Core Razor Pages and MVC applications.
+
+---
+
+> [!IMPORTANT]
+> Check out the [HTML/CSS To Image Docs](https://docs.htmlcsstoimage.com) for more details on the API's capabilities.
+
+> [!TIP]
+> Get started for free at [htmlcsstoimage.com](https://htmlcsstoimage.com).

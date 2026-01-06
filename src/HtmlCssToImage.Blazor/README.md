@@ -1,4 +1,4 @@
-# HTML/CSS to Image Dotnet Client - Blazor Integration
+# [HTML/CSS to Image](https://htmlcsstoimage.com/) Dotnet Client - Blazor Integration
 
 ![HCTI Logo](https://raw.githubusercontent.com/HtmlCssToImage/dotnet-client/main/logo-180x180.png)
 
@@ -86,3 +86,10 @@ Check out the [Sample Project](../samples/BlazorStaticServerSample) for a full e
 - Your generated urls will be signed with your API Key & ID, so if you change them, your meta tags will generate different urls. 
 - If you are interested in using the HCTI API directly to generate & store your images, check out the [HtmlCssToImage Client docs](../HtmlCssToImage/README.md)
 
+---
+
+> [!IMPORTANT]
+> Check out the [HTML/CSS To Image Docs](https://docs.htmlcsstoimage.com) for more details on the API's capabilities.
+
+> [!TIP]
+> Get started for free at [htmlcsstoimage.com](https://htmlcsstoimage.com).

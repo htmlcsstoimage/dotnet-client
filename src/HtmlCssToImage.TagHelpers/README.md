@@ -1,4 +1,4 @@
-# HTML/CSS to Image Dotnet Client - Razor Tag Helpers
+# [HTML/CSS to Image](https://htmlcsstoimage.com/) Dotnet Client - Razor Tag Helpers
 
 ![HCTI Logo](https://raw.githubusercontent.com/HtmlCssToImage/dotnet-client/main/logo-180x180.png)
 
@@ -25,7 +25,7 @@ Refer to the [HtmlCssToImage.DependencyInjection docs](../HtmlCssToImage.Depende
 ### Tag Helper Reference
 
 Finally, you need to add the tag helpers to your `_ViewImports.cshtml` file:
-```csharp
+```razor
 @addTagHelper *, HtmlCssToImage.TagHelpers
 ```
 
@@ -47,6 +47,9 @@ and in each page you want to generate an image for, add a `Section` like so:
     <hcti-og-templated template-id=..... />
     }
 ```
+
+> [!TIP]
+> If you already have a Section for meta tags in your layout, it's fine to use the tag helpers there, they don't require a dedicated section.
 
 ## Tag Helpers
 
@@ -73,10 +76,10 @@ When providing `template-values`, your object must be serializable to JSON. If y
 Use the `<hcti-og-url>` tag to generate an OG meta tag with a URL-generating image request. This tag is handy if you want to use existing styling / razor templates etc as your image source. 
 
 #### Parameters
-| Parameter | Required | Description                                                                                                                            |
-| --------- | :------: |----------------------------------------------------------------------------------------------------------------------------------------|
-| `image-request` | ✅ | An instance of [`HtmlCssToImage.Models.Requests.CreateUrlImageRequest`](./src/HtmlCssToImage/Models/Requests/CreateUrlImageRequest.cs) |
-| `og-meta-type` | | The type of meta tag to generate, such as `twitter:image`. When not specified, `og:image` will be used.                                |
+| Parameter | Required | Description                                                                                                                             |
+| --------- | :------: |-----------------------------------------------------------------------------------------------------------------------------------------|
+| `image-request` | ✅ | An instance of [`HtmlCssToImage.Models.Requests.CreateUrlImageRequest`](../HtmlCssToImage/Models/Requests/CreateUrlImageRequest.cs) |
+| `og-meta-type` | | The type of meta tag to generate, such as `twitter:image`. When not specified, `og:image` will be used.                                 |
 
 #### Image Request
 The `image-request` parameter must be an instance of [`HtmlCssToImage.Models.Requests.CreateUrlImageRequest`](../HtmlCssToImage/Models/Requests/CreateUrlImageRequest.cs) . The options will be used to generate a [create-and-render request url](https://docs.htmlcsstoimage.com/getting-started/create-and-render/). All options that are provided will be URL-encoded and included in the hmac signature except for `pdf_options` which is not currently supported in create-and-render.
@@ -90,3 +93,10 @@ Check out the [Sample Project](../samples/RazorPagesSample) for a full example i
 - Your generated urls will be signed with your API Key & ID, so if you change them, your meta tags will generate different urls.
 - If you are interested in using the HCTI API directly to generate & store your images, check out the [HtmlCssToImage Client docs](../HtmlCssToImage/README.md)
 
+---
+
+> [!IMPORTANT]
+> Check out the [HTML/CSS To Image Docs](https://docs.htmlcsstoimage.com) for more details on the API's capabilities.
+
+> [!TIP]
+> Get started for free at [htmlcsstoimage.com](https://htmlcsstoimage.com).
