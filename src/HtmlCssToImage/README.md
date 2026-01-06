@@ -31,7 +31,7 @@ var http = new HttpClient();
 var client = new HtmlCssToImageClient(http, options);
 ```
 
-If you're using ASP.NET Core or similar frameworks supporting Microsoft DI, check out the [HtmlCssToImage.DependencyInjection Package Docs](https://github.com/HtmlCssToImage/dotnet-client/main/src/HtmlCssToImage.DependencyInjection/README.md) for how to inject the client into your application.
+If you're using ASP.NET Core or similar frameworks supporting Microsoft DI, check out the [HtmlCssToImage.DependencyInjection Package Docs](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage.DependencyInjection/README.md) for how to inject the client into your application.
 
 
 ## Creating Images
@@ -64,7 +64,7 @@ if(html_image.Success)
 }
 ```
 
-Image creation responds with an [`ApiResult<CreateImageResponse>`](https://github.com/HtmlCssToImage/dotnet-client/main/src/HtmlCssToImage/Models/Responses/CreateImageResponse.cs). [`ApiResult<T>`](https://github.com/HtmlCssToImage/dotnet-client/main/src/HtmlCssToImage/Models/Results/ApiResult.cs) is a simple wrapper around Api responses that provides an indicator of `Success` and potentially `ErrorDetails` if the request failed.
+Image creation responds with an [`ApiResult<CreateImageResponse>`](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage/Models/Responses/CreateImageResponse.cs). [`ApiResult<T>`](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage/Models/Results/ApiResult.cs) is a simple wrapper around Api responses that provides an indicator of `Success` and potentially `ErrorDetails` if the request failed.
 
 ### Template Helpers
 When creating a templated image, you can use static helper methods `FromObject<T>` on the `CreateTemplatedImageRequest` class to generate a template, providing serialization options for AOT/serialization control. 
@@ -87,7 +87,7 @@ Call `CreateImageBatchAsync<T>` on the client to create a batch of images from a
 You can construct a `CreateImageBatchRequest` object directly or use the overload on `HtmlCssToImageClient` that accepts `defaultOptions` and `variations` as parameters.
 
 
-Batch creation responds with an [`ApiResult<CreateImageResponse[]>`](https://github.com/HtmlCssToImage/dotnet-client/main/src/HtmlCssToImage/Models/Responses/CreateImageResponse.cs). [`ApiResult<T>`](https://github.com/HtmlCssToImage/dotnet-client/main/src/HtmlCssToImage/Models/Results/ApiResult.cs) is a simple wrapper around Api responses that provides an indicator of `Success` and potentially `ErrorDetails` if the request failed.
+Batch creation responds with an [`ApiResult<CreateImageResponse[]>`](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage/Models/Responses/CreateImageResponse.cs). [`ApiResult<T>`](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage/Models/Results/ApiResult.cs) is a simple wrapper around Api responses that provides an indicator of `Success` and potentially `ErrorDetails` if the request failed.
 
 If your request is successful, the `Response` property will be an array in the order of your `variations`.
 
@@ -107,13 +107,13 @@ These methods are handy when you have a lot of content that may never be rendere
 ## Other Packages
 
 ### HtmlCssToImage.DependencyInjection
-Use [HtmlCssToImage.DependencyInjection](https://github.com/HtmlCssToImage/dotnet-client/main/src/HtmlCssToImage.DependencyInjection/README.md) to integrate the HtmlCssToImage client into your ASP.NET Core application.
+Use [HtmlCssToImage.DependencyInjection](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage.DependencyInjection/README.md) to integrate the HtmlCssToImage client into your ASP.NET Core application.
 
 ### HtmlCssToImage.Blazor
-Use [HtmlCssToImage.Blazor](https://github.com/HtmlCssToImage/dotnet-client/main/src/HtmlCssToImage.Blazor/README.md) to generate Open Graph image tags using HCTI links in your Blazor applications.
+Use [HtmlCssToImage.Blazor](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage.Blazor/README.md) to generate Open Graph image tags using HCTI links in your Blazor applications.
 
 ### HtmlCssToImage.TagHelpers
-Use [HtmlCssToImage.TagHelpers](https://github.com/HtmlCssToImage/dotnet-client/main/src/HtmlCssToImage.TagHelpers/README.md) to generate Open Graph image tags in ASP.NET Core Razor Pages and MVC applications.
+Use [HtmlCssToImage.TagHelpers](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage.TagHelpers/README.md) to generate Open Graph image tags in ASP.NET Core Razor Pages and MVC applications.
 
 ---
 
