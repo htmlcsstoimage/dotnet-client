@@ -2,9 +2,11 @@
 
     <PropertyGroup>
         <Nullable>enable</Nullable>
+        <Title>HTML/CSS To Image for Blazor</Title>
+        <Description>Official Blazor integration for HTML/CSS to Image API. Add automated OG meta tags to your pages.</Description>
+        <PackageTags>hcti;social;tags;og;ogimage;meta;api</PackageTags>
         <ImplicitUsings>enable</ImplicitUsings>
         <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
-        <Version>0.0.1</Version>
     </PropertyGroup>
 
 

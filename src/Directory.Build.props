@@ -1,6 +1,15 @@
 <Project>
+    <!-- 1. Search for and import the Directory.Build.props in the parent folder -->
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+    <PropertyGroup>
+        <!-- Now you can use variables defined in the root or add new ones -->
+        <Description>This is a specific description for projects in the src folder.</Description>
+    </PropertyGroup>
 
     <ItemGroup>
+        <!-- Reference the files from the root using the variables we set -->
         <None Include="../../logo-180x180.png" Pack="true" PackagePath="\" />
+        <None Include="README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 </Project>

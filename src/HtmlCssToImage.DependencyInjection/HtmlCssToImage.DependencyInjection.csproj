@@ -1,8 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
+        <Title>HTML/CSS To Image - Dependency Injection</Title>
+        <Description>DI Support for the HTML/CSS to Image API client.</Description>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
@@ -10,9 +12,16 @@
       <ProjectReference Include="..\HtmlCssToImage\HtmlCssToImage.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
-      <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.1" />
+    <!-- .NET 9 specific dependencies -->
+    <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.11" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.11" />
+    </ItemGroup>
+
+    <!-- .NET 10 specific dependencies -->
+    <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.1" />
     </ItemGroup>
 
 </Project>

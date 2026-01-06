@@ -4,9 +4,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
-        <Version>0.0.1</Version>
         <Title>HTML/CSS To Image Client</Title>
-        <Description>Client for htmlcsstoimage.com.</Description>
+        <Description>Official .NET client for the HTML/CSS to Image API. HTML/CSS or URL Screenshots, rendered exactly like Google Chrome.</Description>
         <IsAotCompatible>true</IsAotCompatible>
         <IsTrimmable>true</IsTrimmable>
     </PropertyGroup>
@@ -19,11 +18,5 @@
         <_Parameter1>HtmlCssToImage.Tests</_Parameter1>
     </AssemblyAttribute>
 </ItemGroup>
-
-    <ItemGroup>
-        <None Include="../../logo-180x180.png" Pack="true" PackagePath="\" />
-        <None Include="README.md" Pack="true" PackagePath="\" />
-    </ItemGroup>
-
 
 </Project>

@@ -7,9 +7,12 @@
       <ProjectReference Include="..\HtmlCssToImage\HtmlCssToImage.csproj" />
     </ItemGroup>
     <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
+        <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Title>HTML/CSS To Image Razor Tag Helpers</Title>
+        <Description>Official Tag Helpers for HTML/CSS to Image API. Add automated OG meta tags to your pages.</Description>
+        <PackageTags>hcti;social;tags;og;ogimage;meta;api</PackageTags>
     </PropertyGroup>
 
 </Project>

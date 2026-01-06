@@ -1,9 +1,11 @@
 <Project>
 
     <PropertyGroup>
+        <Version>0.0.1</Version>
         <Company>Code Happy, LLC</Company>
         <Authors>Code Happy, LLC</Authors>
         <Product>HTML/CSS To Image API</Product>
+        <PackageTags>html;css;image;screenshot;api;wrapper;hcti</PackageTags>
         <Copyright>Copyright © Code Happy, LLC</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -23,6 +25,7 @@
         <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
         <ImplicitUsings>enable</ImplicitUsings>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <RootLogoPath>$(MSBuildThisFileDirectory)logo-180x180.png</RootLogoPath>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
