@@ -1,4 +1,7 @@
-# [HTML/CSS to Image](https://htmlcsstoimage.com/) Dotnet Client - Dependency Injection
+# [HTML/CSS to Image](https://htmlcsstoimage.com/)
+## .NET / C# Client - Dependency Injection
+
+![HCTI Logo](https://raw.githubusercontent.com/HtmlCssToImage/dotnet-client/main/logo-180x180.png)
 
 This package provides dependency injection support for the HtmlCssToImage client.
 

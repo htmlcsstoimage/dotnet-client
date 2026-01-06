@@ -1,6 +1,9 @@
-# [HTML/CSS to Image](https://htmlcsstoimage.com/) Dotnet Client - Razor Tag Helpers
+# [HTML/CSS to Image](https://htmlcsstoimage.com/) 
+## .NET / C# Client - Razor Tag Helpers
 
 ![HCTI Logo](https://raw.githubusercontent.com/HtmlCssToImage/dotnet-client/main/logo-180x180.png)
+
+This package provides Razor Tags for generating Open Graph meta tags using the HtmlCssToImage client.
 
 ## Getting Started
 

@@ -1,6 +1,9 @@
-# [HTML/CSS to Image](https://htmlcsstoimage.com/) Dotnet Client - Blazor Integration
+# [HTML/CSS to Image](https://htmlcsstoimage.com/) 
+## .NET / C# Client - Blazor Integration
 
 ![HCTI Logo](https://raw.githubusercontent.com/HtmlCssToImage/dotnet-client/main/logo-180x180.png)
+
+This package provides Blazor integration for generating Open Graph meta tags using the HtmlCssToImage client.
 
 ## Getting Started
 
