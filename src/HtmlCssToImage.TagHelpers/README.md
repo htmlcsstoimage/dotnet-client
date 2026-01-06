@@ -9,6 +9,8 @@
 
 This package provides Razor Tags for generating Open Graph meta tags using the HtmlCssToImage client.
 
+[![NuGet Version](https://img.shields.io/nuget/v/htmlcsstoimage.taghelpers)](https://www.nuget.org/packages/HtmlCssToImage.TagHelpers)
+
 ## Getting Started
 
 ### Installation

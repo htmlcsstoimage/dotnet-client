@@ -9,6 +9,8 @@
 
 This package provides Blazor integration for generating Open Graph meta tags using the HtmlCssToImage client.
 
+[![NuGet Version](https://img.shields.io/nuget/v/htmlcsstoimage.blazor)](https://www.nuget.org/packages/HtmlCssToImage.Blazor)
+
 ## Getting Started
 
 ### Installation

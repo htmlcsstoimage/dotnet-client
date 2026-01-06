@@ -9,6 +9,8 @@
 
 This package provides dependency injection support for the HtmlCssToImage client.
 
+[![NuGet Version](https://img.shields.io/nuget/v/htmlcsstoimage.dependencyinjection)](https://www.nuget.org/packages/HtmlCssToImage.DependencyInjection)
+
 ## Getting Started
 
 ### Installation

@@ -9,6 +9,8 @@
 
 This package provides a .NET client for the HTML/CSS to Image API, allowing you to generate images from HTML/CSS content directly from your .NET applications.
 
+[![NuGet Version](https://img.shields.io/nuget/v/htmlcsstoimage)](https://www.nuget.org/packages/HtmlCssToImage)
+
 ## Getting Started
 
 ### Installation
