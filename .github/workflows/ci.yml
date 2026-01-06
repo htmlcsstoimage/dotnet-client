@@ -1,0 +1,34 @@
+name: Build and test
+on:
+  pull_request:
+  workflow_dispatch:
+env:
+  DOTNET_NOLOGO: true
+  TEST_RESULTS: artifacts/tests
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet: [ '9.0.x', '10.0.x' ]
+    steps:
+      - uses: actions/checkout@master
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+
+      - run: dotnet --info
+      - name: Build solution and run all tests
+        run: dotnet test --verbosity normal -l trx --results-directory '${{ env.TEST_RESULTS }}'
+
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action/linux@v2
+        if: ${{ success() || failure() }}
+        with:
+          files: '${{ env.TEST_RESULTS }}/*.trx'
+          check_name: "Test results"
+          report_individual_runs: true
+          action_fail: true
+          time_unit: milliseconds
+          compare_to_earlier_commit: false

@@ -5,6 +5,9 @@
     <File Path="src\Directory.Build.props" />
     <File Path="src\samples\Directory.Build.props" />
   </Folder>
+  <Folder Name="/BuildItems/Workflows/">
+    <File Path=".github\workflows\ci.yml" />
+  </Folder>
   <Folder Name="/Samples/">
     <Project Path="src/samples/BlazorStaticServerSample/BlazorStaticServerSample.csproj" />
     <Project Path="src/samples/RazorPagesSample/RazorPagesSample.csproj" />
