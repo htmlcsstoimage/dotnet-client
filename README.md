@@ -44,12 +44,12 @@ if(html_image.Success)
 ## More Details
 Check out the package READMEs for more details on integrating:
 
-| Package                              | Description                                                       | Links |
-|--------------------------------------|-------------------------------------------------------------------| --- |
-| **HtmlCssToImage**                   | Core library for working with the API                             | [README](./src/HtmlCssToImage/README.md) |
-| **HtmlCssToImage.DependencyInjection** | Dependency injection helpers for ASP.NET Core                     | [README](./src/HtmlCssToImage.DependencyInjection/README.md) |
-| **HtmlCssToImage.Blazor**                | Blazor component for generating Open Graph image meta tags        | [README](./src/HtmlCssToImage.Blazor/README.md) |
-| **HtmlCssToImage.TagHelpers**            | ASP.NET Core TagHelpers for generating Open Graph image meta tags | [README](./src/HtmlCssToImage.TagHelpers/README.md) |
+| Package                              | Description                                                       | Links                                                                                                                                   |
+|--------------------------------------|-------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+| **HtmlCssToImage**                   | Core library for working with the API                             | [README](./src/HtmlCssToImage/README.md) [NuGet](https://www.nuget.org/packages/HtmlCssToImage)                                         |
+| **HtmlCssToImage.DependencyInjection** | Dependency injection helpers for ASP.NET Core                     | [README](./src/HtmlCssToImage.DependencyInjection/README.md) [NuGet](https://www.nuget.org/packages/HtmlCssToImage.DependencyInjection) |
+| **HtmlCssToImage.Blazor**                | Blazor component for generating Open Graph image meta tags        | [README](./src/HtmlCssToImage.Blazor/README.md) [NuGet](https://www.nuget.org/packages/HtmlCssToImage.Blazor)                           |
+| **HtmlCssToImage.TagHelpers**            | ASP.NET Core TagHelpers for generating Open Graph image meta tags | [README](./src/HtmlCssToImage.TagHelpers/README.md)  [NuGet](https://www.nuget.org/packages/HtmlCssToImage.TagHelpers)                                                                                   |
 
 ---
 

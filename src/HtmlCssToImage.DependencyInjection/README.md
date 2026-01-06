@@ -73,7 +73,7 @@ In this case, your configuration should look like this:
 }
 ```
 
-See [HtmlCssToImageOptions.cs](../HtmlCssToImage/Models/HtmlCssToImageOptions.cs) for the Configuration object 
+See [HtmlCssToImageOptions.cs](https://raw.githubusercontent.com/HtmlCssToImage/dotnet-client/main/src/HtmlCssToImage/Models/HtmlCssToImageOptions.cs) for the Configuration object 
 
 ### HTTP Options
 Because the HtmlCssToImage client is added to the DI container as a typed HTTP Client (see [Microsoft Docs](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests#typed-clients)) it means you can extend its default behavior, such as adding retry policies or logging. 
