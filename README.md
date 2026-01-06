@@ -1,4 +1,5 @@
-# [HTML/CSS to Image](https://htmlcsstoimage.com/) Dotnet
+# [HTML/CSS to Image](https://htmlcsstoimage.com/) 
+## .Net / C# Packages
 
 This repo contains a .NET client for the HTML/CSS to Image API, allowing you to generate images from HTML/CSS content directly from your .NET applications, as well as helper packages for integrating with ASP.NET Core and Blazor.
 
