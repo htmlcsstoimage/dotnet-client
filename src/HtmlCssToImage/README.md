@@ -1,11 +1,8 @@
 # [HTML/CSS to Image](https://htmlcsstoimage.com/) 
 ## .NET / C# Client
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/HtmlCssToImage/dotnet-client/main/logo-180x180-white.png">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/HtmlCssToImage/dotnet-client/main/logo-180x180.png">
-  <img alt="HCTI Logo" src="https://raw.githubusercontent.com/HtmlCssToImage/dotnet-client/main/logo-180x180.png">
-</picture>
+![HCTI Logo](https://raw.githubusercontent.com/HtmlCssToImage/dotnet-client/main/logo-180x180.png)
+
 
 This package provides a .NET client for the HTML/CSS to Image API, allowing you to generate images from HTML/CSS content directly from your .NET applications.
 
