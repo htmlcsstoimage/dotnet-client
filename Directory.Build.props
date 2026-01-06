@@ -1,7 +1,7 @@
 <Project>
 
     <PropertyGroup>
-        <Version>0.0.3</Version>
+        <Version>0.0.4</Version>
         <Company>Code Happy, LLC</Company>
         <Authors>Code Happy, LLC</Authors>
         <Product>HTML/CSS To Image API</Product>
@@ -12,7 +12,7 @@
 
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/htmlcsstoimage/dotnet-client</RepositoryUrl>
-        <PackageProjectUrl>https://github.com/htmlcsstoimage/dotnet-client</PackageProjectUrl>
+        <PackageProjectUrl>https://htmlcsstoimage.com</PackageProjectUrl>
 
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>

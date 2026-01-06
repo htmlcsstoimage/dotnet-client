@@ -28,12 +28,14 @@ public class HtmlCssToImageClient : IHtmlCssToImageClient
     private readonly string _apiId;
 
 
+
     /// <summary>
     /// A client for interacting with the HtmlCssToImage service, providing functionality for creating images using HTML and CSS input, managing templates, and generating rendered image URLs.
     /// </summary>
     public HtmlCssToImageClient(HttpClient client, HtmlCssToImageOptions options)
     {
         _client = client;
+        _client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("HCTIDotNet", LibraryInfo.Version));
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", options.AuthHeader());
         _apiKey = options.ApiKey;
         _apiId = options.ApiId;

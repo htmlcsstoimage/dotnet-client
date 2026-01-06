@@ -19,4 +19,23 @@
     </AssemblyAttribute>
 </ItemGroup>
 
+    <ItemGroup>
+        <CompilerVisibleProperty Include="Version" />
+    </ItemGroup>
+
+    <Target Name="GenerateVersionFile" BeforeTargets="BeforeBuild">
+    <PropertyGroup>
+        <VersionFileContents>
+            namespace HtmlCssToImage%3B
+            internal static class LibraryInfo
+            {
+                public const string Version = "$(Version)"%3B
+            }
+        </VersionFileContents>
+        </PropertyGroup>
+        <WriteLinesToFile File="$(IntermediateOutputPath)LibraryInfo.g.cs" Lines="$(VersionFileContents)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+        <ItemGroup>
+            <Compile Include="$(IntermediateOutputPath)LibraryInfo.g.cs" />
+        </ItemGroup>
+    </Target>
 </Project>
