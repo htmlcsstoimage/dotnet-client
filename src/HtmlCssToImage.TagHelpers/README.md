@@ -29,7 +29,7 @@ You'll also need to register the `IHtmlCssToImageClient` in your application's s
 builder.Services.AddHtmlCssToImage("api_id", "api_key");
 ```
 
-Refer to the [HtmlCssToImage.DependencyInjection docs](https://raw.githubusercontent.com/HtmlCssToImage/dotnet-client/main/src/HtmlCssToImage.DependencyInjection/README.md) for more details on configuring the client.
+Refer to the [HtmlCssToImage.DependencyInjection docs](https://github.com/HtmlCssToImage/dotnet-client/main/src/HtmlCssToImage.DependencyInjection/README.md) for more details on configuring the client.
 
 ### Tag Helper Reference
 
@@ -91,16 +91,16 @@ Use the `<hcti-og-url>` tag to generate an OG meta tag with a URL-generating ima
 | `og-meta-type` | | The type of meta tag to generate, such as `twitter:image`. When not specified, `og:image` will be used.                                 |
 
 #### Image Request
-The `image-request` parameter must be an instance of [`HtmlCssToImage.Models.Requests.CreateUrlImageRequest`](https://raw.githubusercontent.com/HtmlCssToImage/dotnet-client/main/src/HtmlCssToImage/Models/Requests/CreateUrlImageRequest.cs) . The options will be used to generate a [create-and-render request url](https://docs.htmlcsstoimage.com/getting-started/create-and-render/). All options that are provided will be URL-encoded and included in the hmac signature except for `pdf_options` which is not currently supported in create-and-render.
+The `image-request` parameter must be an instance of [`HtmlCssToImage.Models.Requests.CreateUrlImageRequest`](https://github.com/HtmlCssToImage/dotnet-client/main/src/HtmlCssToImage/Models/Requests/CreateUrlImageRequest.cs) . The options will be used to generate a [create-and-render request url](https://docs.htmlcsstoimage.com/getting-started/create-and-render/). All options that are provided will be URL-encoded and included in the hmac signature except for `pdf_options` which is not currently supported in create-and-render.
 
 ## Examples
-Check out the [Sample Project](https://raw.githubusercontent.com/HtmlCssToImage/dotnet-client/main/src/samples/RazorPagesSample) for a full example implementation.
+Check out the [Sample Project](https://github.com/HtmlCssToImage/dotnet-client/main/src/samples/RazorPagesSample) for a full example implementation.
 
 ## Other Notes
 - You can use multiple tag helpers on the same page to define different meta tags like `og:image` and `twitter:image`
 - It is best to keep the `template-values` / `image-request` parameters as simple as possible to avoid unnecessary complexity and potentially large urls.
 - Your generated urls will be signed with your API Key & ID, so if you change them, your meta tags will generate different urls.
-- If you are interested in using the HCTI API directly to generate & store your images, check out the [HtmlCssToImage Client docs](https://raw.githubusercontent.com/HtmlCssToImage/dotnet-client/main/src/HtmlCssToImage/README.md)
+- If you are interested in using the HCTI API directly to generate & store your images, check out the [HtmlCssToImage Client docs](https://github.com/HtmlCssToImage/dotnet-client/main/src/HtmlCssToImage/README.md)
 
 ---
 
