@@ -64,7 +64,7 @@ if(html_image.Success)
 Image creation responds with an [`ApiResult<CreateImageResponse>`](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage/Models/Responses/CreateImageResponse.cs). [`ApiResult<T>`](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage/Models/Results/ApiResult.cs) is a simple wrapper around Api responses that provides an indicator of `Success` and potentially `ErrorDetails` if the request failed.
 
 ### Template Helpers
-When creating a templated image, you can use static helper methods `FromObject<T>` on the `CreateTemplatedImageRequest` class to generate a template, providing serialization options for AOT/serialization control. 
+When creating a templated image, you can use static helper methods `FromObject<T>` on the `CreateTemplatedImageRequest` class to generate a template, providing serialization options for AOT/serialization control. See more below in the [Performance & Native AOT](#performance--native-aot) section.
  
 ```csharp 
 // Create a template from an object, using default serialization options. This will warn in AOT scenarios
@@ -100,6 +100,15 @@ These URLs are tied to the API Key & API Id you provide when creating the client
 
 These methods are handy when you have a lot of content that may never be rendered, and want to render on-demand, as to not waste your image credits.
 
+## Performance & Native AOT
+
+This library is built with performance in mind and is fully compatible with **Native AOT** (Ahead-of-Time) compilation in .NET 9+. 
+
+The client internally uses source-generated JSON serialization, so no extra configuration is required for standard API requests.
+
+### AOT with Templated Images
+
+When using templates, you provide a custom object for `templateValues`. In a Native AOT environment, reflection is restricted, so you must ensure your types are source-generated. Ensure you use the overloads with `JsonTypeInfo<T>` or `JsonSerializerOptions` to provide serialization options. If you're providing `JsonSerializerOptions`, ensure it has the type info in its resolver chain. Check out the [Microsoft JSON docs](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/source-generation) for more details.
 
 ## Other Packages
 

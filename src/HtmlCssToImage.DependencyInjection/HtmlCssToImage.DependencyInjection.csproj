@@ -6,11 +6,17 @@
         <Title>HTML/CSS To Image - Dependency Injection</Title>
         <Description>DI Support for the HTML/CSS to Image API client.</Description>
         <Nullable>enable</Nullable>
+        <IsAotCompatible>true</IsAotCompatible>
+        <IsTrimmable>true</IsTrimmable>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\HtmlCssToImage\HtmlCssToImage.csproj" />
     </ItemGroup>
+
+    <PropertyGroup>
+        <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
+    </PropertyGroup>
 
     <!-- .NET 9 specific dependencies -->
     <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">

@@ -62,14 +62,27 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        builder.Services.AddHtmlCssToImage(builder.Configuration.GetSection("HtmlCssToImage"));
+        builder.Services.AddHtmlCssToImage(builder.Configuration.GetSection("HCTI"));
     } 
+}
 ```
 
-In this case, your configuration should look like this:
+You can also simply pass a string to the `AddHtmlCssToImage` method to bind to a configuration section.
+```csharp
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+        builder.Services.AddHtmlCssToImage("HCTI");
+    } 
+}
+```
+
+In either case, your configuration would look like this:
 ```json
 {
-  "HtmlCssToImage":{
+  "HCTI":{
     "ApiId": "api_id",
     "ApiKey": "api_key"
   }
@@ -82,6 +95,15 @@ See [HtmlCssToImageOptions.cs](https://github.com/htmlcsstoimage/dotnet-client/b
 Because the HtmlCssToImage client is added to the DI container as a typed HTTP Client (see [Microsoft Docs](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/http-requests#typed-clients)) it means you can extend its default behavior, such as adding retry policies or logging. 
 
 All the `.AddHtmlCssToImage()` methods return an `IHttpClientBuilder` which allows you to configure the underlying `HttpClient` instance.
+
+
+## Performance & Native AOT
+
+This library is built with performance in mind and is fully compatible with **Native AOT** (Ahead-of-Time) compilation in .NET 9+.
+
+The client internally uses source-generated JSON serialization, so no extra configuration is required for standard API requests.
+
+The configuration binding source generator is enabled, so you can safely use the IConfiguration overload of `AddHtmlCssToImage` without any additional configuration. You still need to ensure that the `PublishAot` flag is enabled in your project file.
 
 ---
 

@@ -1,11 +1,11 @@
 <Project>
 
     <PropertyGroup>
-        <Version>0.0.7</Version>
+        <Version>0.0.8</Version>
         <Company>Code Happy, LLC</Company>
         <Authors>Code Happy, LLC</Authors>
         <Product>HTML/CSS To Image API</Product>
-        <PackageTags>html;css;image;screenshot;api;wrapper;hcti</PackageTags>
+        <PackageTags>html;css;image;screenshot;hcti;aot</PackageTags>
         <Copyright>Copyright © Code Happy, LLC</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>

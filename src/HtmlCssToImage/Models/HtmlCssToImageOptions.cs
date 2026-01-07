@@ -6,6 +6,7 @@ namespace HtmlCssToImage.Models;
 /// <summary>
 /// Represents configuration options for accessing the HtmlCssToImage API, including the necessary API credentials.
 /// </summary>
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
 public class HtmlCssToImageOptions
 {
     /// <summary>

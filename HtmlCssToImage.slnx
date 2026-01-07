@@ -10,6 +10,7 @@
     <File Path=".github\workflows\pack.yml" />
   </Folder>
   <Folder Name="/Samples/">
+    <Project Path="src/samples/AotSample/AotSample.csproj" />
     <Project Path="src/samples/BlazorStaticServerSample/BlazorStaticServerSample.csproj" />
     <Project Path="src/samples/RazorPagesSample/RazorPagesSample.csproj" />
   </Folder>
