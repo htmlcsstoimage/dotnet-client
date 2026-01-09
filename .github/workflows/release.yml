@@ -1,0 +1,143 @@
+name: Build, Pack and Release
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+    paths-ignore:
+      - 'benchmarks/**'
+      - 'README.md'
+      - 'LICENSE.txt'
+
+env:
+  DOTNET_NOLOGO: true
+
+jobs:
+  auto-tag:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Check if Directory.Build.props changed
+        id: check_props
+        run: |
+          # If it's the first push to main, before might be all zeros
+          BEFORE_SHA=${{ github.event.before }}
+          if [[ "$BEFORE_SHA" == "0000000000000000000000000000000000000000" ]]; then
+            # Fallback to checking only the last commit
+            BEFORE_SHA="HEAD^"
+          fi
+          
+          if git diff --name-only "$BEFORE_SHA" ${{ github.event.after }} | grep -q "^Directory.Build.props$"; then
+            echo "CHANGED=true" >> $GITHUB_OUTPUT
+          else
+            echo "CHANGED=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Get Version
+        if: steps.check_props.outputs.CHANGED == 'true'
+        id: get_version
+        run: |
+          VERSION=$(grep -oPm1 '(?<=<Version>)[^<]+' Directory.Build.props)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Detected version: $VERSION"
+
+      - name: Create Tag
+        if: steps.check_props.outputs.CHANGED == 'true'
+        run: |
+          TAG="v${{ steps.get_version.outputs.VERSION }}"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists. Skipping."
+          else
+            echo "Creating tag $TAG"
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag "$TAG"
+            git push origin "$TAG"
+          fi
+
+  build-and-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    strategy:
+      matrix:
+        dotnet: [ '9.0.x', '10.0.x' ]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+
+      - name: Get Version
+        id: get_version
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            TAG=${GITHUB_REF#refs/tags/}
+            VERSION=${TAG#v}
+            echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+            echo "IS_TAG=true" >> $GITHUB_OUTPUT
+          else
+            VERSION=$(grep -oPm1 '(?<=<Version>)[^<]+' Directory.Build.props)
+            echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+            echo "IS_TAG=false" >> $GITHUB_OUTPUT
+          fi
+
+      - run: dotnet --info
+      - name: Build solution and run all tests
+        run: dotnet test
+      - name: pack
+        if: matrix.dotnet == '10.0.x'
+        run: |
+          dotnet pack -c Release -o output /p:Version=${{ steps.get_version.outputs.VERSION }}
+      - name: Upload Artifact
+        if: matrix.dotnet == '10.0.x'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: output/*.nupkg
+
+  publish:
+    needs: build-and-test
+    permissions:
+      contents: write
+      id-token: write
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-packages
+
+      - name: NuGet login
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      - name: Push to NuGet
+        run: |
+          for file in ./*.nupkg; do
+            dotnet nuget push "$file" --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+          done
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./*.nupkg
+          generate_release_notes: true
+          draft: false
+          prerelease: false
