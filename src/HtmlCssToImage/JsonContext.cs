@@ -35,9 +35,12 @@ namespace HtmlCssToImage;
 /// - <see cref="CreateImageResponse"/>
 /// - <see cref="ErrorDetails"/>
 /// - <see cref="PdfValueWithUnits"/>
+/// - <see cref="CreateTemplateRequest"/>
+/// - <see cref="CreateTemplateResponse"/>
+/// - <see cref="PaginatedResponse{T}"/>
 /// </remarks>
 [JsonSourceGenerationOptions(UseStringEnumConverter = true, NumberHandling = JsonNumberHandling.AllowReadingFromString, AllowTrailingCommas = true, PropertyNamingPolicy = JsonKnownNamingPolicy.SnakeCaseLower, RespectNullableAnnotations = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    Converters = [typeof(PdfValueWithUnitsNullableConverter),typeof(PdfValueWithUnitsConverter), typeof(PdfMarginsConverter)])]
+    Converters = [typeof(PdfValueWithUnitsNullableConverter), typeof(PdfValueWithUnitsConverter), typeof(PdfMarginsConverter)])]
 [JsonSerializable(typeof(CreateHtmlCssImageRequest))]
 [JsonSerializable(typeof(CreateUrlImageRequest))]
 [JsonSerializable(typeof(CreateTemplatedImageRequest))]
@@ -47,7 +50,7 @@ namespace HtmlCssToImage;
 [JsonSerializable(typeof(CreateImageResponse))]
 [JsonSerializable(typeof(ErrorDetails))]
 [JsonSerializable(typeof(PdfValueWithUnits[]))]
-public partial class JsonContext:JsonSerializerContext
-{
-
-}
+[JsonSerializable(typeof(CreateTemplateRequest))]
+[JsonSerializable(typeof(CreateTemplateResponse))]
+[JsonSerializable(typeof(PaginatedResponse<Template>))]
+public partial class JsonContext : JsonSerializerContext { }

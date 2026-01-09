@@ -1,0 +1,205 @@
+name: Run Benchmarks
+on:
+  push:
+    tags:
+      - 'v*'
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            9.0.x
+            10.0.x
+      - name: Build Benchmarks
+        run: dotnet build src/tests/HtmlCssToImage.Benchmarks/HtmlCssToImage.Benchmarks.csproj -c Release
+      - name: Get Benchmark List
+        id: set-matrix
+        run: |
+          # Get the list of benchmark classes
+          LIST=$(dotnet run -c Release --no-build --project src/tests/HtmlCssToImage.Benchmarks/HtmlCssToImage.Benchmarks.csproj -- --list flat | awk -F. '{print $(NF-1)}' | sort -u | jq -R . | jq -s -c .)
+          echo "matrix=$LIST" >> $GITHUB_OUTPUT
+
+  benchmark:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        benchmark: ${{ fromJson(needs.setup.outputs.matrix) }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            9.0.x
+            10.0.x
+
+      - name: Build Benchmarks
+        run: dotnet build src/tests/HtmlCssToImage.Benchmarks/HtmlCssToImage.Benchmarks.csproj -c Release
+
+      - name: Get Version from Tag
+        if: github.event_name != 'pull_request'
+        id: get_tag
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          else
+            # For workflow_dispatch, get version from Directory.Build.props
+            VERSION=$(grep -oPm1 '(?<=<Version>)[^<]+' Directory.Build.props)
+            echo "TAG=v$VERSION" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check if benchmarks already exist
+        if: github.event_name != 'pull_request'
+        id: check_benchmarks
+        run: |
+          VERSION_TAG="${{ steps.get_tag.outputs.TAG }}"
+          EXISTS=false
+          if [ -d "benchmarks/$VERSION_TAG" ]; then
+            echo "Benchmarks for $VERSION_TAG already exist in benchmarks folder."
+            EXISTS=true
+          fi
+          
+          # Also check for outstanding PRs
+          PR_EXISTS=$(gh pr list --state open --head "benchmark-results-$VERSION_TAG" --json number --jq 'length')
+          if [ "$PR_EXISTS" -gt 0 ]; then
+            echo "An outstanding PR for $VERSION_TAG benchmarks already exists."
+            EXISTS=true
+          fi
+          
+          if [ "$EXISTS" = "true" ]; then
+            echo "EXISTS=true" >> $GITHUB_OUTPUT
+          else
+            echo "EXISTS=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Benchmark (${{ matrix.benchmark }})
+        if: github.event_name == 'pull_request' || steps.check_benchmarks.outputs.EXISTS != 'true'
+        run: |
+          dotnet run -c Release --no-build --project src/tests/HtmlCssToImage.Benchmarks/HtmlCssToImage.Benchmarks.csproj -- --filter "*${{ matrix.benchmark }}*" --artifacts ./BenchmarkDotNet.Artifacts
+        env:
+          BDNRUNPARAM: net10.0
+
+      - name: Upload Benchmark Artifacts
+        if: github.event_name == 'pull_request' || steps.check_benchmarks.outputs.EXISTS != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results-${{ matrix.benchmark }}
+          path: BenchmarkDotNet.Artifacts/results/
+
+  process-results:
+    needs: benchmark
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: benchmark-results
+          pattern: benchmark-results-*
+          merge-multiple: true
+
+      - name: List Downloaded Files
+        run: |
+          echo "Listing files in benchmark-results:"
+          ls -R benchmark-results
+
+      - name: Get Version from Tag
+        if: github.event_name != 'pull_request'
+        id: get_tag
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          else
+            # For workflow_dispatch, get version from Directory.Build.props
+            VERSION=$(grep -oPm1 '(?<=<Version>)[^<]+' Directory.Build.props)
+            echo "TAG=v$VERSION" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Aggregate Benchmark Results
+        if: github.event_name == 'pull_request'
+        id: aggregate
+        run: |
+          REPORT="### Benchmark Results"$'\n\n'
+          # Look in the benchmark-results directory where they were downloaded
+          FILES=(benchmark-results/*-report-github.md)
+          
+          if [ -e "${FILES[0]}" ]; then
+            for f in "${FILES[@]}"; do
+              REPORT+="#### $(basename "$f" -report-github.md)"$'\n'
+              REPORT+="$(cat "$f")"$'\n\n'
+            done
+          else
+            REPORT+="No benchmark results found in benchmark-results directory."
+          fi
+          
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "REPORT<<$EOF" >> $GITHUB_OUTPUT
+          echo "$REPORT" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        env:
+          REPORT: ${{ steps.aggregate.outputs.REPORT }}
+        with:
+          script: |
+            const body = process.env.REPORT;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            })
+
+      - name: Store Benchmark Results
+        if: github.event_name != 'pull_request'
+        run: |
+          VERSION_TAG="${{ steps.get_tag.outputs.TAG }}"
+          
+          # Check if we actually have any artifacts (they might not have been uploaded if skipped)
+          if [ ! -d "benchmark-results" ] || [ -z "$(ls -A benchmark-results 2>/dev/null)" ]; then
+            echo "No benchmark results found to store."
+            exit 0
+          fi
+
+          mkdir -p "benchmarks/$VERSION_TAG"
+          cp -r benchmark-results/* "benchmarks/$VERSION_TAG/"
+          
+      - name: Create Pull Request
+        if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Add benchmark results for ${{ steps.get_tag.outputs.TAG }}"
+          branch: "benchmark-results-${{ steps.get_tag.outputs.TAG }}"
+          title: "Add benchmark results for ${{ steps.get_tag.outputs.TAG }}"
+          body: |
+            Automated benchmark results for version ${{ steps.get_tag.outputs.TAG }}.
+            
+            These benchmarks were automatically generated by the Run Benchmarks workflow.
+          base: main
+          add-paths: benchmarks/
