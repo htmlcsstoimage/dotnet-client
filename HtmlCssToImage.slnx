@@ -15,6 +15,7 @@
     <Project Path="src/samples/RazorPagesSample/RazorPagesSample.csproj" />
   </Folder>
   <Folder Name="/Tests/">
+    <Project Path="src/tests/HtmlCssToImage.Benchmarks/HtmlCssToImage.Benchmarks.csproj" />
     <Project Path="src/tests/HtmlCssToImage.Tests/HtmlCssToImage.Tests.csproj" />
   </Folder>
   <Project Path="src/HtmlCssToImage.Blazor/HtmlCssToImage.Blazor.csproj" />

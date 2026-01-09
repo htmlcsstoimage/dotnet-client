@@ -115,4 +115,45 @@ public interface IHtmlCssToImageClient
     /// <param name="format">Specifies the format of the generated image. Defaults to RenderImageFormat.PNG.</param>
     /// <returns>A string containing the URL of the generated templated image.</returns>
     public string CreateTemplatedImageUrl<T>(string templateId, T templateValues, JsonSerializerOptions jsonSerializerOptions, long? templateVersion = null, RenderImageFormat format = RenderImageFormat.PNG);
+
+
+    /// <summary>
+    /// Creates a new version of a template using the specified template ID and request parameters.
+    /// </summary>
+    /// <param name="templateId">The unique identifier of the template to create a version for.</param>
+    /// <param name="request">The <see cref="CreateTemplateRequest"/> object containing the details for the new template version, such as updated configuration or settings.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation before it completes.</param>
+    /// <returns>An <see cref="ApiResult{CreateTemplateResponse}"/> object containing the response data for the created template version
+    /// and its associated metadata, or error details if the operation fails.</returns>
+    public Task<ApiResult<CreateTemplateResponse?>> CreateTemplateVersionAsync(string templateId, CreateTemplateRequest request, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Creates a new template based on the provided request and returns the result, including metadata about the created template.
+    /// </summary>
+    /// <param name="request">The request object containing the parameters for creating a template, such as template properties or layout configurations.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation before completion.</param>
+    /// <returns>An <see cref="ApiResult{T}"/> object containing the response with metadata about the newly created template and the status of the operation.</returns>
+    public Task<ApiResult<CreateTemplateResponse?>> CreateTemplateAsync(CreateTemplateRequest request, CancellationToken cancellationToken = default);
+
+
+    /// <summary>
+    /// Retrieves a paginated list of template versions for a specified template ID.
+    /// </summary>
+    /// <param name="templateId">The unique identifier of the template for which versions are to be listed.</param>
+    /// <param name="count">The maximum number of template versions to include in the response. Defaults to 10.</param>
+    /// <param name="nextPageStart">An optional parameter indicating the starting point for the next page of results, if pagination is needed.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation before completion.</param>
+    /// <returns>An <see cref="ApiResult{T}"/> object containing a <see cref="PaginatedResponse{Template}"/> with the retrieved template versions or null if no versions exist.</returns>
+    public Task<ApiResult<PaginatedResponse<Template>?>> ListTemplateVersionsAsync(string templateId, int count = 10, long? nextPageStart = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves a paginated list of templates, retrieving the most recent version for each.
+    /// </summary>
+    /// <param name="count">The maximum number of templates to retrieve in a single page. Defaults to 10 if not specified.</param>
+    /// <param name="nextPageStart">An optional parameter specifying the starting point for the next page of results. Null indicates the first page.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation before completion.</param>
+    /// <returns>An <see cref="ApiResult{T}"/> containing a <see cref="PaginatedResponse{T}"/> object, which holds the returned templates and pagination metadata.</returns>
+    public Task<ApiResult<PaginatedResponse<Template>?>> ListTemplatesAsync(int count = 10, long? nextPageStart = null, CancellationToken cancellationToken = default);
+
+
 }

@@ -31,4 +31,9 @@ public class CreateUrlImageRequest:CreateImageCommonOptions, IBatchAllowedImageR
     /// portion of the webpage within the configured viewport dimensions will be captured.
     /// </remarks>
     public bool? FullScreen { get; set; }
+
+    /// <summary>
+    /// Attempt to block cookie/consent banners from displaying.
+    /// </summary>
+    public bool? BlockConsentBanners { get; set; }
 }

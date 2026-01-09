@@ -260,3 +260,5 @@ paket-files/
 
 output
 *.DS_STORE
+
+**/BenchmarkDotNet.Artifacts/**

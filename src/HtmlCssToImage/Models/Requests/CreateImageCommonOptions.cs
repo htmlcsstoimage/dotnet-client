@@ -71,8 +71,4 @@ public abstract class CreateImageCommonOptions
         /// </summary>
         public string? Timezone { get; set; }
 
-        /// <summary>
-        /// Attempt to block cookie/consent banners from displaying.
-        /// </summary>
-        public bool? BlockConsentBanners { get; set; }
 }
