@@ -73,15 +73,21 @@ jobs:
         if: github.event_name == 'pull_request'
         id: aggregate
         run: |
+          REPORT="### Benchmark Results"$'\n\n'
+          FILES=(src/tests/HtmlCssToImage.Benchmarks/BenchmarkDotNet.Artifacts/results/*-report-github.md)
+          
+          if [ -e "${FILES[0]}" ]; then
+            for f in "${FILES[@]}"; do
+              REPORT+="#### $(basename "$f" -report-github.md)"$'\n'
+              REPORT+="$(cat "$f")"$'\n\n'
+            done
+          else
+            REPORT+="No benchmark results found."
+          fi
+          
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "REPORT<<$EOF" >> $GITHUB_OUTPUT
-          echo "### Benchmark Results" >> $GITHUB_OUTPUT
-          echo "" >> $GITHUB_OUTPUT
-          for f in src/tests/HtmlCssToImage.Benchmarks/BenchmarkDotNet.Artifacts/results/*-report-github.md; do
-            echo "#### $(basename "$f" -report-github.md)" >> $GITHUB_OUTPUT
-            cat "$f" >> $GITHUB_OUTPUT
-            echo "" >> $GITHUB_OUTPUT
-          done
+          echo "$REPORT" >> $GITHUB_OUTPUT
           echo "$EOF" >> $GITHUB_OUTPUT
 
       - name: Comment on PR
@@ -103,7 +109,11 @@ jobs:
           VERSION_TAG="${{ steps.get_tag.outputs.TAG }}"
           mkdir -p "benchmarks/$VERSION_TAG"
           # BenchmarkDotNet might have generated multiple files, copy them all
-          cp -r src/tests/HtmlCssToImage.Benchmarks/BenchmarkDotNet.Artifacts/results/* "benchmarks/$VERSION_TAG/"
+          if ls src/tests/HtmlCssToImage.Benchmarks/BenchmarkDotNet.Artifacts/results/* >/dev/null 2>&1; then
+            cp -r src/tests/HtmlCssToImage.Benchmarks/BenchmarkDotNet.Artifacts/results/* "benchmarks/$VERSION_TAG/"
+          else
+            echo "No benchmark results found to store."
+          fi
           
       - name: Create Pull Request
         if: github.event_name != 'pull_request' && steps.check_benchmarks.outputs.EXISTS != 'true'
