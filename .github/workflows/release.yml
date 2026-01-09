@@ -19,11 +19,14 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      TAG_CREATED: ${{ steps.create_tag.outputs.TAG_CREATED }}
+      VERSION: ${{ steps.get_version.outputs.VERSION }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Check if Directory.Build.props changed
         id: check_props
         run: |
@@ -49,17 +52,20 @@ jobs:
           echo "Detected version: $VERSION"
 
       - name: Create Tag
+        id: create_tag
         if: steps.check_props.outputs.CHANGED == 'true'
         run: |
           TAG="v${{ steps.get_version.outputs.VERSION }}"
           if git rev-parse "$TAG" >/dev/null 2>&1; then
             echo "Tag $TAG already exists. Skipping."
+            echo "TAG_CREATED=false" >> $GITHUB_OUTPUT
           else
             echo "Creating tag $TAG"
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git tag "$TAG"
             git push origin "$TAG"
+            echo "TAG_CREATED=true" >> $GITHUB_OUTPUT
           fi
 
   build-and-test:
@@ -109,11 +115,16 @@ jobs:
           path: output/*.nupkg
 
   publish:
-    needs: build-and-test
+    needs: [build-and-test, auto-tag]
     permissions:
       contents: write
       id-token: write
-    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+    if: |
+      always() &&
+      (needs.build-and-test.result == 'success') &&
+      (github.event_name == 'workflow_dispatch' || 
+       startsWith(github.ref, 'refs/tags/v') || 
+       needs.auto-tag.outputs.TAG_CREATED == 'true')
     runs-on: ubuntu-latest
     steps:
       - name: Download Artifact
@@ -134,9 +145,10 @@ jobs:
           done
 
       - name: Create Release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') || needs.auto-tag.outputs.TAG_CREATED == 'true'
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || format('v{0}', needs.auto-tag.outputs.VERSION) }}
           files: ./*.nupkg
           generate_release_notes: true
           draft: false

@@ -13,7 +13,7 @@
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/htmlcsstoimage/dotnet-client</RepositoryUrl>
         <PackageProjectUrl>https://htmlcsstoimage.com</PackageProjectUrl>
-
+        <IsPackable>false</IsPackable>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <DebugType>embedded</DebugType>

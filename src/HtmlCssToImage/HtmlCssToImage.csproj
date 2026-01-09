@@ -3,6 +3,7 @@
     <PropertyGroup>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <IsPackable>true</IsPackable>
         <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
         <Title>HTML/CSS To Image Client</Title>
         <Description>Official .NET client for the HTML/CSS to Image API. HTML/CSS or URL Screenshots, rendered exactly like Google Chrome.</Description>
