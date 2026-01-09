@@ -163,9 +163,11 @@ jobs:
       - name: Comment on PR
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v8
+        env:
+          REPORT: ${{ steps.aggregate.outputs.REPORT }}
         with:
           script: |
-            const body = `${{ steps.aggregate.outputs.REPORT }}`;
+            const body = process.env.REPORT;
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
