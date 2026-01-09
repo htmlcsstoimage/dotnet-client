@@ -27,14 +27,6 @@ jobs:
           # Get the list of benchmark classes
           LIST=$(dotnet run -c Release --no-build --project src/tests/HtmlCssToImage.Benchmarks/HtmlCssToImage.Benchmarks.csproj -- --list flat | awk -F. '{print $(NF-1)}' | sort -u | jq -R . | jq -s -c .)
           echo "matrix=$LIST" >> $GITHUB_OUTPUT
-      - name: Upload Built Benchmarks
-        uses: actions/upload-artifact@v4
-        with:
-          name: built-benchmarks
-          path: |
-            src/tests/HtmlCssToImage.Benchmarks/bin/Release/net10.0/
-            src/HtmlCssToImage/bin/Release/net10.0/
-            src/HtmlCssToImage/bin/Release/net9.0/
 
   benchmark:
     needs: setup
@@ -56,11 +48,8 @@ jobs:
             9.0.x
             10.0.x
 
-      - name: Download Built Benchmarks
-        uses: actions/download-artifact@v4
-        with:
-          name: built-benchmarks
-          path: .
+      - name: Build Benchmarks
+        run: dotnet build src/tests/HtmlCssToImage.Benchmarks/HtmlCssToImage.Benchmarks.csproj -c Release
 
       - name: Get Version from Tag
         if: github.event_name != 'pull_request'
@@ -103,7 +92,7 @@ jobs:
       - name: Run Benchmark (${{ matrix.benchmark }})
         if: github.event_name == 'pull_request' || steps.check_benchmarks.outputs.EXISTS != 'true'
         run: |
-          dotnet src/tests/HtmlCssToImage.Benchmarks/bin/Release/net10.0/HtmlCssToImage.Benchmarks.dll --filter "*${{ matrix.benchmark }}*" --artifacts ./BenchmarkDotNet.Artifacts
+          dotnet run -c Release --no-build --project src/tests/HtmlCssToImage.Benchmarks/HtmlCssToImage.Benchmarks.csproj -- --filter "*${{ matrix.benchmark }}*" --artifacts ./BenchmarkDotNet.Artifacts
         env:
           BDNRUNPARAM: net10.0
 
