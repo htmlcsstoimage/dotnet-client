@@ -69,18 +69,12 @@ jobs:
         env:
           BDNRUNPARAM: net10.0
 
-      - name: Run Benchmarks (.NET 9)
-        if: github.event_name == 'pull_request' || steps.check_benchmarks.outputs.EXISTS != 'true'
-        run: |
-          dotnet run -c Release --project src/tests/HtmlCssToImage.Benchmarks/HtmlCssToImage.Benchmarks.csproj -- --filter '*'
-        env:
-          BDNRUNPARAM: net9.0
-
       - name: Aggregate Benchmark Results
         if: github.event_name == 'pull_request'
         id: aggregate
         run: |
-          echo "REPORT<<EOF" >> $GITHUB_OUTPUT
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "REPORT<<$EOF" >> $GITHUB_OUTPUT
           echo "### Benchmark Results" >> $GITHUB_OUTPUT
           echo "" >> $GITHUB_OUTPUT
           for f in src/tests/HtmlCssToImage.Benchmarks/BenchmarkDotNet.Artifacts/results/*-report-github.md; do
@@ -88,7 +82,7 @@ jobs:
             cat "$f" >> $GITHUB_OUTPUT
             echo "" >> $GITHUB_OUTPUT
           done
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
 
       - name: Comment on PR
         if: github.event_name == 'pull_request'
