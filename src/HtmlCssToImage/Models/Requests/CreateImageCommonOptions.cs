@@ -71,4 +71,23 @@ public abstract class CreateImageCommonOptions
         /// </summary>
         public string? Timezone { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the viewport should be rendered as if it's being viewed from a mobile device.
+        /// </summary>
+        public bool? ViewportMobile { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the viewport should be in landscape orientation.
+        /// </summary>
+        public bool? ViewportLandscape { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether touch interactions are enabled within the viewport.
+        /// </summary>
+        public bool? ViewportTouch { get; set; }
+        /// <summary>
+        /// Gets or sets the media type to use for rendering.
+        /// </summary>
+        public MediaType? MediaType { get; set; }
+
 }
