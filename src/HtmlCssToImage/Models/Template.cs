@@ -129,21 +129,26 @@ public class Template
     /// <summary>
     /// Gets or sets a value indicating whether the viewport should be rendered as if it's being viewed from a mobile device.
     /// </summary>
-    public bool? ViewportMobile { get; set; }
+    public bool? ViewportMobile { get; init; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the viewport should be in landscape orientation.
     /// </summary>
-    public bool? ViewportLandscape { get; set; }
+    public bool? ViewportLandscape { get; init; }
 
     /// <summary>
     /// Gets or sets a value indicating whether touch interactions are enabled within the viewport.
     /// </summary>
-    public bool? ViewportTouch { get; set; }
+    public bool? ViewportTouch { get; init; }
     /// <summary>
     /// Gets or sets the media type to use for rendering.
     /// </summary>
-    public MediaType? MediaType { get; set; }
+    public MediaType? MediaType { get; init; }
+
+    /// <summary>
+    /// Gets or sets the proxy_id to use for rendering.
+    /// </summary>
+    public string? ProxyId { get; init; }
 
 
 }

@@ -90,4 +90,9 @@ public abstract class CreateImageCommonOptions
         /// </summary>
         public MediaType? MediaType { get; set; }
 
+        /// <summary>
+        /// Gets or sets the proxy ID to use for rendering.
+        /// </summary>
+        public string? ProxyId { get; set; }
+
 }
