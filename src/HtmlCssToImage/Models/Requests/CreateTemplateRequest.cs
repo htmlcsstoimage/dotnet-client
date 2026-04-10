@@ -112,4 +112,9 @@ public class CreateTemplateRequest
     /// Gets or sets the media type to use for rendering.
     /// </summary>
     public MediaType? MediaType { get; set; }
+
+    /// <summary>
+    /// Gets or sets the proxy_id to use for rendering.
+    /// </summary>
+    public string? ProxyId { get; set; }
 }
