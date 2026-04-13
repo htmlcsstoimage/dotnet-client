@@ -55,6 +55,38 @@ public class Program
 }
 ```
 
+#### Provider-based Configuration
+If your credentials already live behind another registered service, use the provider-aware overload and resolve that dependency when configuring the client.
+
+```csharp
+public sealed class HctiSecretProvider
+{
+    public string ApiId { get; init; } = string.Empty;
+    public string ApiKey { get; init; } = string.Empty;
+}
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+
+        builder.Services.AddSingleton(new HctiSecretProvider
+        {
+            ApiId = "api_id",
+            ApiKey = "api_key"
+        });
+
+        builder.Services.AddHtmlCssToImage((sp, options) =>
+        {
+            var secrets = sp.GetRequiredService<HctiSecretProvider>();
+            options.ApiId = secrets.ApiId;
+            options.ApiKey = secrets.ApiKey;
+        });
+    }
+}
+```
+
 #### Standard dotnet Configuration
 ```csharp
 public class Program

@@ -26,10 +26,18 @@ public class HtmlCssToImageClientTests
     }
 
 
+    private const string DefaultHost = "https://hcti.io";
+
     private HtmlCssToImageClient CreateClient()
     {
         var httpClient = new HttpClient(_handlerMock.Object);
         return new HtmlCssToImageClient(httpClient, _options);
+    }
+
+    private HtmlCssToImageClient CreateClient(string apiHost)
+    {
+        var httpClient = new HttpClient(_handlerMock.Object);
+        return new HtmlCssToImageClient(httpClient, _options, apiHost);
     }
 
     public enum QueryStringType
@@ -117,6 +125,68 @@ public class HtmlCssToImageClientTests
         Assert.True(result.Success);
         Assert.NotNull(result.Response);
         Assert.Equal("img_1", result.Response.Id);
+    }
+
+    [Fact]
+    public async Task CreateImageAsync_UsesDefaultHost()
+    {
+        HttpRequestMessage? capturedRequest = null;
+        _handlerMock.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .Callback<HttpRequestMessage, CancellationToken>((request, _) => capturedRequest = request)
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = JsonContent.Create(new { url = "https://hcti.io/v1/image/img_1", id = "img_1" })
+            });
+
+        var client = CreateClient(DefaultHost);
+        var request = new CreateHtmlCssImageRequest { Html = "<b>Test</b>" };
+
+        await client.CreateImageAsync(request, TestContext.Current.CancellationToken);
+
+        Assert.NotNull(capturedRequest);
+        Assert.Equal(new Uri("https://hcti.io/v1/image?includeId=true"), capturedRequest.RequestUri);
+    }
+
+    [Fact]
+    public async Task CreateImageAsync_UsesConfiguredHost()
+    {
+        const string configuredBaseUrl = "https://example.test";
+        HttpRequestMessage? capturedRequest = null;
+        _handlerMock.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .Callback<HttpRequestMessage, CancellationToken>((request, _) => capturedRequest = request)
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = JsonContent.Create(new { url = "https://hcti.io/v1/image/img_1", id = "img_1" })
+            });
+
+        var client = CreateClient(configuredBaseUrl);
+        var request = new CreateHtmlCssImageRequest { Html = "<b>Test</b>" };
+
+        await client.CreateImageAsync(request, TestContext.Current.CancellationToken);
+
+        Assert.NotNull(capturedRequest);
+        Assert.Equal(new Uri("https://example.test/v1/image?includeId=true"), capturedRequest.RequestUri);
+    }
+
+    [Fact]
+    public void CreateAndRenderUrl_UsesConfiguredHost()
+    {
+        var client = CreateClient("https://example.test");
+        var request = new CreateUrlImageRequest { Url = "https://google.com" };
+
+        var result = client.CreateAndRenderUrl(request);
+
+        Assert.StartsWith("https://example.test/v1/image/create-and-render/test_id/", result);
     }
 
     [Fact]

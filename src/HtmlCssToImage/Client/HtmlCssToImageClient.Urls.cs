@@ -90,7 +90,7 @@ public partial class HtmlCssToImageClient
                 format_string = $"/{format.RenderFormatToExtensionWithoutDot()}";
             }
 
-            var url = $"{CREATE_PATH}/{templateId}/{token}{format_string}?{chars.LimitedSpan}";
+            var url = $"{_apiHost}{CREATE_PATH}/{templateId}/{token}{format_string}?{chars.LimitedSpan}";
 
             return url;
         }
@@ -192,7 +192,7 @@ public partial class HtmlCssToImageClient
                 format_string = $"/{format.RenderFormatToExtensionWithoutDot()}";
             }
 
-            var url = $"{CREATE_AND_RENDER_PATH}/{_apiId}/{token}{format_string}?{chars.LimitedSpan}";
+            var url = $"{_apiHost}{CREATE_AND_RENDER_PATH}/{_apiId}/{token}{format_string}?{chars.LimitedSpan}";
 
             return url;
         }

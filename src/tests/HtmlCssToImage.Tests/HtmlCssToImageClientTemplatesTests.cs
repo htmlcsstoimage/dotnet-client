@@ -30,11 +30,17 @@ public class HtmlCssToImageClientTemplatesTests
         return new HtmlCssToImageClient(httpClient, _options);
     }
 
+    private HtmlCssToImageClient CreateClient(string apiHost)
+    {
+        var httpClient = new HttpClient(_handlerMock.Object);
+        return new HtmlCssToImageClient(httpClient, _options, apiHost);
+    }
+
     [Theory]
-    [InlineData(null, 10u, null, "https://hcti.io/v1/template?count=10")]
-    [InlineData("tpl_123", 20u, null, "https://hcti.io/v1/template/tpl_123?count=20")]
-    [InlineData(null, 50u, 12345L, "https://hcti.io/v1/template?count=50&max_version=12345")]
-    [InlineData("tpl_456", 100u, 67890L, "https://hcti.io/v1/template/tpl_456?count=100&max_version=67890")]
+    [InlineData(null, 10u, null, "/v1/template?count=10")]
+    [InlineData("tpl_123", 20u, null, "/v1/template/tpl_123?count=20")]
+    [InlineData(null, 50u, 12345L, "/v1/template?count=50&max_version=12345")]
+    [InlineData("tpl_456", 100u, 67890L, "/v1/template/tpl_456?count=100&max_version=67890")]
     public void GetTemplateListUrl_GeneratesCorrectUrl(string? templateId, uint count, long? nextPageStart, string expectedUrl)
     {
         var url = HtmlCssToImageClient.GetTemplateListUrl(templateId, count, nextPageStart);
@@ -69,6 +75,30 @@ public class HtmlCssToImageClientTemplatesTests
         Assert.Single(result.Response.Data);
         Assert.Equal("tpl_1", result.Response.Data[0].TemplateId);
         Assert.Equal(123L, result.Response.Pagination.next_page_start);
+    }
+
+    [Fact]
+    public async Task ListTemplates_UsesConfiguredHost()
+    {
+        HttpRequestMessage? capturedRequest = null;
+        _handlerMock.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .Callback<HttpRequestMessage, CancellationToken>((request, _) => capturedRequest = request)
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = JsonContent.Create(new PaginatedResponse<Template> { Data = [], Pagination = new PaginatedResponse<Template>.PaginationInfo(null) }, JsonContext.Default.PaginatedResponseTemplate)
+            });
+
+        var client = CreateClient("https://example.test");
+
+        await client.ListTemplatesAsync(cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.NotNull(capturedRequest);
+        Assert.Equal(new Uri("https://example.test/v1/template?count=10"), capturedRequest.RequestUri);
     }
 
     [Fact]
