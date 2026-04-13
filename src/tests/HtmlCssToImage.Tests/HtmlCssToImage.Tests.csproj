@@ -20,6 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\HtmlCssToImage.DependencyInjection\HtmlCssToImage.DependencyInjection.csproj" />
       <ProjectReference Include="..\..\HtmlCssToImage\HtmlCssToImage.csproj" />
     </ItemGroup>
 

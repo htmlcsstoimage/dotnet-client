@@ -1,4 +1,4 @@
-﻿using HtmlCssToImage;
+using HtmlCssToImage;
 using HtmlCssToImage.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -11,6 +11,14 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
+    private const string MissingCredentialsMessage = "HtmlCssToImage API credentials must be provided.";
+
+    private static OptionsBuilder<HtmlCssToImageOptions> AddValidatedHtmlCssToImageOptions(this IServiceCollection services)
+    {
+        return services.AddOptions<HtmlCssToImageOptions>()
+            .Validate(options => !string.IsNullOrWhiteSpace(options.ApiId) && !string.IsNullOrWhiteSpace(options.ApiKey), MissingCredentialsMessage)
+            .ValidateOnStart();
+    }
 
     private static IHttpClientBuilder ConfigureHtmlCssToImage(this IServiceCollection services)
     {
@@ -33,10 +41,26 @@ public static class ServiceCollectionExtensions
     public static IHttpClientBuilder AddHtmlCssToImage(this IServiceCollection services, Action<HtmlCssToImageOptions> configure)
     {
         services
-            .AddOptions<HtmlCssToImageOptions>()
-            .Configure(configure)
-            .Validate(options => !string.IsNullOrWhiteSpace(options.ApiId) && !string.IsNullOrWhiteSpace(options.ApiKey), "HtmlCssToImage API credentials must be provided.")
-            .ValidateOnStart();
+            .AddValidatedHtmlCssToImageOptions()
+            .Configure(configure);
+
+        return services.ConfigureHtmlCssToImage();
+    }
+
+    /// <summary>
+    /// Registers the HtmlCssToImage services with the dependency injection system.
+    /// This overload allows configuration using services that are already registered in the container.
+    /// </summary>
+    /// <param name="services">The service collection to which the HtmlCssToImage services will be added.</param>
+    /// <param name="configure">An action that can resolve dependencies from the service provider and apply them to the <see cref="HtmlCssToImageOptions"/>.</param>
+    /// <returns>
+    /// An <see cref="IHttpClientBuilder"/> that can be used to further configure the HTTP client for the HtmlCssToImage service.
+    /// </returns>
+    public static IHttpClientBuilder AddHtmlCssToImage(this IServiceCollection services, Action<IServiceProvider, HtmlCssToImageOptions> configure)
+    {
+        services.AddValidatedHtmlCssToImageOptions();
+        services.AddSingleton<IConfigureOptions<HtmlCssToImageOptions>>(sp =>
+            new ConfigureNamedOptions<HtmlCssToImageOptions>(string.Empty, options => configure(sp, options)));
 
         return services.ConfigureHtmlCssToImage();
     }
@@ -52,10 +76,8 @@ public static class ServiceCollectionExtensions
     /// </returns>
     public static IHttpClientBuilder AddHtmlCssToImage(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddOptions<HtmlCssToImageOptions>()
-            .Bind(configuration)
-            .Validate(options => !string.IsNullOrWhiteSpace(options.ApiId) && !string.IsNullOrWhiteSpace(options.ApiKey), "HtmlCssToImage API credentials must be provided.")
-            .ValidateOnStart();
+        services.AddValidatedHtmlCssToImageOptions()
+            .Bind(configuration);
 
         return services.ConfigureHtmlCssToImage();
     }
@@ -71,15 +93,11 @@ public static class ServiceCollectionExtensions
     /// </returns>
     public static IHttpClientBuilder AddHtmlCssToImage(this IServiceCollection services, string configSectionPath)
     {
-        services.AddOptions<HtmlCssToImageOptions>()
-            .BindConfiguration(configSectionPath)
-            .Validate(options => !string.IsNullOrWhiteSpace(options.ApiId) && !string.IsNullOrWhiteSpace(options.ApiKey), "HtmlCssToImage API credentials must be provided.")
-            .ValidateOnStart();
+        services.AddValidatedHtmlCssToImageOptions()
+            .BindConfiguration(configSectionPath);
 
         return services.ConfigureHtmlCssToImage();
     }
-
-
 
     /// <summary>
     /// Registers the HtmlCssToImage services with the dependency injection system.
@@ -93,16 +111,13 @@ public static class ServiceCollectionExtensions
     /// </returns>
     public static IHttpClientBuilder AddHtmlCssToImage(this IServiceCollection services, string apiId, string apiKey)
     {
-        services.AddOptions<HtmlCssToImageOptions>()
+        services.AddValidatedHtmlCssToImageOptions()
             .Configure(options =>
             {
                 options.ApiId = apiId;
                 options.ApiKey = apiKey;
-            })
-            .Validate(options => !string.IsNullOrWhiteSpace(options.ApiId) && !string.IsNullOrWhiteSpace(options.ApiKey), "HtmlCssToImage API credentials must be provided.")
-            .ValidateOnStart();
+            });
+
         return services.ConfigureHtmlCssToImage();
     }
-
-
 }

@@ -10,7 +10,7 @@ namespace HtmlCssToImage;
 
 public partial class HtmlCssToImageClient
 {
-    internal const string TEMPLATE_BASE_URL = $"{HOST}/v1/template";
+    internal const string TEMPLATE_BASE_URL = "/v1/template";
 
     /// <inheritdoc />
     public Task<ApiResult<CreateTemplateResponse?>> CreateTemplateAsync(CreateTemplateRequest request, CancellationToken cancellationToken = default) => CreateTemplateCore(request, cancellationToken: cancellationToken);
