@@ -246,14 +246,8 @@ internal static class QueryStringEncoder
 
         needsEncoding = true;
         int length = firstUnsafeIndex;
-        Span<byte> utf8 = stackalloc byte[4];
-        // From this point, we need to calculate precisely or use a tighter heuristic.
-        // A tight heuristic for AOT/Perf is:
-        // 1. Chars before first unsafe: 1:1
-        // 2. Remaining chars: assume worst case for those specific remaining chars.
-        // BUT: indexAnyExcept is so fast we can just do a quick count.
-
         int i = firstUnsafeIndex;
+
         while (i < span.Length)
         {
             int safeLength = span[i..].IndexOfAnyExcept(urlSafeChars);
@@ -267,21 +261,31 @@ internal static class QueryStringEncoder
                 length += safeLength;
                 i += safeLength;
             }
-            var status = Rune.DecodeFromUtf16(span[i..], out var rune, out int charsConsumed);
+
+            char c = span[i];
+            if (c <= 0x7F)
+            {
+                length += 3;
+                i++;
+                continue;
+            }
+
+            if (!char.IsSurrogate(c))
+            {
+                length += c <= 0x7FF ? 6 : 9;
+                i++;
+                continue;
+            }
+
+
+            var status = Rune.DecodeFromUtf16(span[i..], out _, out int charsConsumed);
             if (status != OperationStatus.Done)
             {
                 i++;
                 continue;
             }
-            if (rune.IsAscii && urlSafeChars.Contains((char)rune.Value))
-            {
-                length++;
-            }
-            else
-            {
-                var utf8_len = rune.EncodeToUtf8(utf8);
-                length += utf8_len*3;
-            }
+
+            length += 12;
             i += charsConsumed;
         }
         return length;
