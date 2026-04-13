@@ -246,32 +246,48 @@ internal static class QueryStringEncoder
 
         needsEncoding = true;
         int length = firstUnsafeIndex;
-        // From this point, we need to calculate precisely or use a tighter heuristic.
-        // A tight heuristic for AOT/Perf is:
-        // 1. Chars before first unsafe: 1:1
-        // 2. Remaining chars: assume worst case for those specific remaining chars.
-        // BUT: indexAnyExcept is so fast we can just do a quick count.
+        int i = firstUnsafeIndex;
 
-        for (int i = firstUnsafeIndex; i < span.Length; i++)
+        while (i < span.Length)
         {
-            char c = span[i];
-            if (urlSafeChars.Contains(c))
+            int safeLength = span[i..].IndexOfAnyExcept(urlSafeChars);
+            if (safeLength == -1)
             {
-                length++;
+                length += span.Length - i;
+                break;
             }
-            else
+            if (safeLength > 0)
             {
-                // If it's a surrogate pair, it will take 12 chars (%XX%XX%XX%XX)
-                // but it's 2 chars in length. So effectively 6x.
-                // If it's a standard char, it takes 3 chars (%XX). Effectively 3x.
-                length += char.IsHighSurrogate(c) ? 6 : 3;
-                if (char.IsHighSurrogate(c))
-                {
-                    i++;
-                }
+                length += safeLength;
+                i += safeLength;
             }
-        }
 
+            char c = span[i];
+            if (c <= 0x7F)
+            {
+                length += 3;
+                i++;
+                continue;
+            }
+
+            if (!char.IsSurrogate(c))
+            {
+                length += c <= 0x7FF ? 6 : 9;
+                i++;
+                continue;
+            }
+
+
+            var status = Rune.DecodeFromUtf16(span[i..], out _, out int charsConsumed);
+            if (status != OperationStatus.Done)
+            {
+                i++;
+                continue;
+            }
+
+            length += 12;
+            i += charsConsumed;
+        }
         return length;
     }
 }
