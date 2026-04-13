@@ -246,32 +246,44 @@ internal static class QueryStringEncoder
 
         needsEncoding = true;
         int length = firstUnsafeIndex;
+        Span<byte> utf8 = stackalloc byte[4];
         // From this point, we need to calculate precisely or use a tighter heuristic.
         // A tight heuristic for AOT/Perf is:
         // 1. Chars before first unsafe: 1:1
         // 2. Remaining chars: assume worst case for those specific remaining chars.
         // BUT: indexAnyExcept is so fast we can just do a quick count.
 
-        for (int i = firstUnsafeIndex; i < span.Length; i++)
+        int i = firstUnsafeIndex;
+        while (i < span.Length)
         {
-            char c = span[i];
-            if (urlSafeChars.Contains(c))
+            int safeLength = span[i..].IndexOfAnyExcept(urlSafeChars);
+            if (safeLength == -1)
+            {
+                length += span.Length - i;
+                break;
+            }
+            if (safeLength > 0)
+            {
+                length += safeLength;
+                i += safeLength;
+            }
+            var status = Rune.DecodeFromUtf16(span[i..], out var rune, out int charsConsumed);
+            if (status != OperationStatus.Done)
+            {
+                i++;
+                continue;
+            }
+            if (rune.IsAscii && urlSafeChars.Contains((char)rune.Value))
             {
                 length++;
             }
             else
             {
-                // If it's a surrogate pair, it will take 12 chars (%XX%XX%XX%XX)
-                // but it's 2 chars in length. So effectively 6x.
-                // If it's a standard char, it takes 3 chars (%XX). Effectively 3x.
-                length += char.IsHighSurrogate(c) ? 6 : 3;
-                if (char.IsHighSurrogate(c))
-                {
-                    i++;
-                }
+                var utf8_len = rune.EncodeToUtf8(utf8);
+                length += utf8_len*3;
             }
+            i += charsConsumed;
         }
-
         return length;
     }
 }

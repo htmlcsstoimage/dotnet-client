@@ -38,7 +38,8 @@ public class HtmlCssToImageClientTests
         Numbers,
         Emoji,
         Long,
-        Space
+        Space,
+        NonUtf8
     }
 
     [Theory]
@@ -49,6 +50,7 @@ public class HtmlCssToImageClientTests
     [InlineData(QueryStringType.Numbers,null)]
     [InlineData(QueryStringType.Numbers,RenderImageFormat.WEBP)]
     [InlineData(QueryStringType.Emoji,null)]
+    [InlineData(QueryStringType.NonUtf8,null)]
     [InlineData(QueryStringType.Long,null)]
     [InlineData(QueryStringType.Space,null)]
     public void CreateUrl_GeneratesValidSignedUrl(QueryStringType type, RenderImageFormat? format  )
@@ -58,6 +60,7 @@ public class HtmlCssToImageClientTests
             QueryStringType.None => "",
             QueryStringType.Numbers => "?abc=123",
             QueryStringType.Emoji => "?abc=👀",
+            QueryStringType.NonUtf8=>$"?abc={new string('漢',100)}",
             QueryStringType.Long => $"?abc={new string('a', 600)}",
             QueryStringType.Space => "?abc=a b",
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
