@@ -23,6 +23,12 @@ public class ErrorDetails
     /// A list of validation errors that occurred during the request.
     /// </summary>
     [JsonPropertyName("validationErrors")]
-    public List<ValidationError> ValidationErrors { get; set; } = [];
+    public ValidationError[]? ValidationErrors { get; set; }
+
+    /// <summary>
+    /// A reference ID that can be used to track the error.
+    /// </summary>
+    [JsonPropertyName("referenceId")]
+    public string? ReferenceId { get; init; }
 
 }
