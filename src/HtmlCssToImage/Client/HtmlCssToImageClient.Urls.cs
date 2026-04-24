@@ -1,5 +1,6 @@
 using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization.Metadata;
@@ -105,60 +106,21 @@ public partial class HtmlCssToImageClient
     {
         QueryStringEncoder.EncodeSafeKey("url", request.Url, ref chars);
 
-        if (request.FullScreen == true)
-        {
-            QueryStringEncoder.EncodeSafeKeyValue("full_screen", "true", ref chars);
-        }
-
-        if (request.BlockConsentBanners == true)
-        {
-            QueryStringEncoder.EncodeSafeKeyValue("block_consent_banners", "true", ref chars);
-        }
-
-        if (request.DisableTwemoji == true)
-        {
-            QueryStringEncoder.EncodeSafeKeyValue("disable_twemoji", "true", ref chars);
-        }
-
-        if (request.MaxRenderOnce == true)
-        {
-            QueryStringEncoder.EncodeSafeKeyValue("max_render_once", "true", ref chars);
-        }
-
-        if (request.RenderWhenReady == true)
-        {
-            QueryStringEncoder.EncodeSafeKeyValue("render_when_ready", "true", ref chars);
-        }
+        AppendBoolIfTrue("full_screen",request.FullScreen, ref chars);
+        AppendBoolIfTrue("block_consent_banners",request.BlockConsentBanners, ref chars);
+        AppendBoolIfTrue("disable_twemoji",request.DisableTwemoji, ref chars);
+        AppendBoolIfTrue("max_render_once",request.MaxRenderOnce, ref chars);
+        AppendBoolIfTrue("render_when_ready",request.RenderWhenReady, ref chars);
 
         if (request.ColorScheme != null)
         {
-            QueryStringEncoder.EncodeSafeKeyValue("color_scheme", Helpers.EnumToString.ColorSchemeString(request.ColorScheme.Value), ref chars);
+            QueryStringEncoder.EncodeSafeKeyValue("color_scheme", request.ColorScheme.Value.ColorSchemeString(), ref chars);
         }
-
-        if (request.DeviceScale != null)
-        {
-            QueryStringEncoder.WriteSafeKey("device_scale", request.DeviceScale.Value, ref chars);
-        }
-
-        if (request.MaxWaitMs != null)
-        {
-            QueryStringEncoder.WriteSafeKey("max_wait_ms", request.MaxWaitMs.Value, ref chars);
-        }
-
-        if (request.MsDelay != null)
-        {
-            QueryStringEncoder.WriteSafeKey("ms_delay", request.MsDelay.Value, ref chars);
-        }
-
-        if (request.ViewportHeight != null)
-        {
-            QueryStringEncoder.WriteSafeKey("viewport_height", request.ViewportHeight.Value, ref chars);
-        }
-
-        if (request.ViewportWidth != null)
-        {
-            QueryStringEncoder.WriteSafeKey("viewport_width", request.ViewportWidth.Value, ref chars);
-        }
+        AppendNumberIfNotNull("device_scale", request.DeviceScale, ref chars);
+        AppendNumberIfNotNull("max_wait_ms", request.MaxWaitMs, ref chars);
+        AppendNumberIfNotNull("ms_delay", request.MsDelay, ref chars);
+        AppendNumberIfNotNull("viewport_height", request.ViewportHeight, ref chars);
+        AppendNumberIfNotNull("viewport_width", request.ViewportWidth, ref chars);
 
         if (!string.IsNullOrWhiteSpace(request.Css))
         {
@@ -173,6 +135,38 @@ public partial class HtmlCssToImageClient
         if (!string.IsNullOrWhiteSpace(request.Timezone))
         {
             QueryStringEncoder.EncodeSafeKey("timezone", request.Timezone, ref chars);
+        }
+        AppendBoolIfTrue("viewport_mobile", request.ViewportMobile, ref chars);
+        AppendBoolIfTrue("viewport_landscape", request.ViewportLandscape, ref chars);
+        AppendBoolIfTrue("viewport_touch", request.ViewportTouch, ref chars);
+        if (request.MediaType != null)
+        {
+            QueryStringEncoder.EncodeSafeKeyValue("media_type", request.MediaType.Value.MediaTypeString(), ref chars);
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.ProxyId))
+        {
+            QueryStringEncoder.EncodeSafeKey("proxy_id", request.ProxyId, ref chars);
+        }
+
+        AppendNumberIfNotNull("jumbo_max_width", request.JumboMaxWidth, ref chars);
+        AppendNumberIfNotNull("jumbo_max_height", request.JumboMaxHeight, ref chars);
+
+    }
+
+    private static void AppendNumberIfNotNull<T>(ReadOnlySpan<char> key, T? value, ref ArrayOrSpan<char> chars) where T : struct, INumber<T>
+    {
+        if (value != null)
+        {
+            QueryStringEncoder.WriteSafeKey(key, value.Value, ref chars);
+        }
+    }
+
+    private static void AppendBoolIfTrue(ReadOnlySpan<char> key, bool? value, ref ArrayOrSpan<char> chars)
+    {
+        if (value == true)
+        {
+            QueryStringEncoder.EncodeSafeKeyValue(key, "true", ref chars);
         }
     }
 
