@@ -25,6 +25,7 @@ public class CreateHtmlCssImageRequest:CreateImageCommonOptions, IBatchAllowedIm
     /// Gets or sets the Google Fonts to be included when generating an image.
     /// This property allows specifying one or more Google Fonts
     /// You must also set the font-family in your CSS to use the loaded font(s).
+    /// <see href="https://docs.htmlcsstoimage.com/parameters/google_fonts/">Read the Google Fonts Guide for more information.</see>
     /// </summary>
     [JsonConverter(typeof(GoogleFontsJsonConverter))]
     public string[]? GoogleFonts { get; set; }

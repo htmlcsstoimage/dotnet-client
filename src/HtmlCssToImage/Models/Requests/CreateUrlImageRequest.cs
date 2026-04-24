@@ -24,6 +24,7 @@ public class CreateUrlImageRequest:CreateImageCommonOptions, IBatchAllowedImageR
 
     /// <summary>
     /// Indicates whether the screenshot should capture the entire webpage in full height.
+    /// <see href="https://docs.htmlcsstoimage.com/parameters/full_screen/">Read the full_screen Guide for more information.</see>
     /// </summary>
     /// <remarks>
     /// When set to true, this property ensures that the screenshot includes the full vertical content of the webpage,
@@ -34,6 +35,7 @@ public class CreateUrlImageRequest:CreateImageCommonOptions, IBatchAllowedImageR
 
     /// <summary>
     /// Attempt to block cookie/consent banners from displaying.
+    /// <see href="https://docs.htmlcsstoimage.com/guides/advanced/blocking-cookie-banners/">Read the Blocking Cookie Banners Guide for more information.</see>
     /// </summary>
     public bool? BlockConsentBanners { get; set; }
 }
