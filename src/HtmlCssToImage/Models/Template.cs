@@ -150,5 +150,15 @@ public class Template
     /// </summary>
     public string? ProxyId { get; init; }
 
+    /// <summary>
+    /// Gets or sets the maximum width of the rendered image in jumbo mode.
+    /// </summary>
+    public uint? JumboMaxWidth { get; init; }
+
+    /// <summary>
+    /// Gets or sets the maximum height of the rendered image in jumbo mode.
+    /// </summary>
+    public uint? JumboMaxHeight { get; init; }
+
 
 }
