@@ -7,8 +7,12 @@ using System.Text.Json.Serialization;
 
 namespace HtmlCssToImage.Models.Converters;
 
-internal class GoogleFontsJsonConverter : JsonConverter<string[]?>
+/// <summary>
+/// A JsonConverter to convert a string array to/from string expected by the API
+/// </summary>
+public sealed class GoogleFontsJsonConverter : JsonConverter<string[]?>
 {
+    /// <inheritdoc />
     public override string[]? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType == JsonTokenType.Null)
@@ -59,6 +63,7 @@ internal class GoogleFontsJsonConverter : JsonConverter<string[]?>
         return l.ToArray();
     }
 
+    /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, string[]? value, JsonSerializerOptions options)
     {
         if (value == null || value.Length == 0)

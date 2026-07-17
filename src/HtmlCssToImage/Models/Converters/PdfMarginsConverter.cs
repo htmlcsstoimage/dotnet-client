@@ -3,8 +3,12 @@ using System.Text.Json.Serialization;
 
 namespace HtmlCssToImage.Models.Converters;
 
-internal class PdfMarginsConverter:JsonConverter<PdfMargins?>
+/// <summary>
+/// A JsonConverter to convert a PdfMargins to/from string array expected by the API
+/// </summary>
+public sealed class PdfMarginsConverter:JsonConverter<PdfMargins?>
 {
+    /// <inheritdoc />
     public override PdfMargins? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType == JsonTokenType.Null)
@@ -25,6 +29,7 @@ internal class PdfMarginsConverter:JsonConverter<PdfMargins?>
         return new PdfMargins(arr[0], arr[1], arr[2], arr[3]);
     }
 
+    /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, PdfMargins? value, JsonSerializerOptions options)
     {
         if (value == null)

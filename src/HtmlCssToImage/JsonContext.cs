@@ -22,7 +22,7 @@ namespace HtmlCssToImage;
 /// including requests, responses, and other associated models.
 /// </summary>
 /// <remarks>
-/// The JsonContext class uses custom JSON converters for specialized data types such as:
+/// The JsonContext class uses custom JSON converters for specialized data types such as
 /// - <see cref="PdfValueWithUnitsNullableConverter"/>
 /// - <see cref="PdfValueWithUnitsConverter"/>
 /// - <see cref="PdfMarginsConverter"/>

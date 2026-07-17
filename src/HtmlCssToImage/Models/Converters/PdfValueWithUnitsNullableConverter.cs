@@ -5,8 +5,12 @@ using HtmlCssToImage.Helpers;
 
 namespace HtmlCssToImage.Models.Converters;
 
-internal class PdfValueWithUnitsNullableConverter:JsonConverter<PdfValueWithUnits?>
+/// <summary>
+/// A JsonConverter to convert a PdfValueWithUnits to/from string expected by the API
+/// </summary>
+public sealed class PdfValueWithUnitsNullableConverter:JsonConverter<PdfValueWithUnits?>
 {
+    /// <inheritdoc />
     public override PdfValueWithUnits? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
 
@@ -58,6 +62,7 @@ internal class PdfValueWithUnitsNullableConverter:JsonConverter<PdfValueWithUnit
         return new PdfValueWithUnits(number, unit);
     }
 
+    /// <inheritdoc />
     public override void Write(Utf8JsonWriter writer, PdfValueWithUnits? value, JsonSerializerOptions options)
     {
         if (value==null)
