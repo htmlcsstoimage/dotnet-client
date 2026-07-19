@@ -16,7 +16,7 @@ internal static class CropHelpers
     public static void AppendToQueryString(
         this RenderImageCropOrigin origin,
         ReadOnlySpan<char> key,
-        ref QueryStringBuilder chars)
+        ref UrlStringBuilder chars)
     {
         ReadOnlySpan<char> value = origin switch
         {
@@ -125,7 +125,7 @@ internal static class CropHelpers
         T value,
         RenderImageCropUnit unit,
         ReadOnlySpan<char> key,
-        ref QueryStringBuilder chars)
+        ref UrlStringBuilder chars)
         where T : struct, ISpanFormattable
     {
         Span<char> formatted = stackalloc char[16];

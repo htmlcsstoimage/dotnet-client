@@ -4,13 +4,13 @@ using System.Runtime.CompilerServices;
 
 namespace HtmlCssToImage.Helpers;
 
-internal ref struct QueryStringBuilder : IDisposable
+internal ref struct UrlStringBuilder : IDisposable
 {
     private ArrayOrSpan<char> _chars;
     private int _parameterCount;
     private int _questionMarkPosition;
 
-    public QueryStringBuilder(Span<char> initial)
+    public UrlStringBuilder(Span<char> initial)
     {
         _chars = new(initial);
     }

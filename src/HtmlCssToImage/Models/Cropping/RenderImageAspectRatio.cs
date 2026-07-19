@@ -48,7 +48,7 @@ public readonly record struct RenderImageAspectRatio
     }
 
     internal void AppendToQueryString(
-        ref QueryStringBuilder chars,
+        ref UrlStringBuilder chars,
         ReadOnlySpan<char> key)
     {
         Span<char> value = stackalloc char[21];

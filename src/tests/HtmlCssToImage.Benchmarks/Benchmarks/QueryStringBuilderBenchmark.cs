@@ -58,7 +58,7 @@ public class QueryStringBuilderBenchmark
     [Benchmark]
     public string HctiQueryStringBuilder()
     {
-        QueryStringBuilder builder = new(stackalloc char[512]);
+        UrlStringBuilder builder = new(stackalloc char[512]);
         try
         {
             HtmlCssToImageClient.CreateAndRenderUrlQueryString(_request, ref builder);
@@ -74,7 +74,7 @@ public class QueryStringBuilderBenchmark
     [Benchmark]
     public string HctiQueryStringBuilderDirect()
     {
-        using QueryStringBuilder builder = new(stackalloc char[512]);
+        using UrlStringBuilder builder = new(stackalloc char[512]);
 
             builder.EncodeSafeKey("url",_request.Url);
             builder.EncodeSafeKey("css",_request.Css);

@@ -76,7 +76,7 @@ public readonly record struct RenderImageCropSize : IParsable<RenderImageCropSiz
         CropHelpers.ValidateSize(Value, Unit, parameterName);
     }
 
-    internal void AppendToQueryString(ref QueryStringBuilder chars, ReadOnlySpan<char> key)
+    internal void AppendToQueryString(ref UrlStringBuilder chars, ReadOnlySpan<char> key)
     {
         CropHelpers.AppendToQueryString(Value, Unit, key, ref chars);
     }

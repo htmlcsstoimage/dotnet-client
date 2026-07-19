@@ -2,12 +2,12 @@ using HtmlCssToImage.Helpers;
 
 namespace HtmlCssToImage.Tests;
 
-public class QueryStringBuilderTests
+public class UrlStringBuilderTests
 {
     [Fact]
     public void QueryString_KeepsLiteralPrefixOutOfQuery()
     {
-        QueryStringBuilder builder = new(stackalloc char[8]);
+        UrlStringBuilder builder = new(stackalloc char[8]);
         try
         {
             builder.AppendLiteral("https://example.test/path");
@@ -33,7 +33,7 @@ public class QueryStringBuilderTests
     [Fact]
     public void QueryString_WhenNoParameters_IsEmpty()
     {
-        QueryStringBuilder builder = new(stackalloc char[8]);
+        UrlStringBuilder builder = new(stackalloc char[8]);
         try
         {
             builder.AppendLiteral("https://example.test/path");
@@ -51,7 +51,7 @@ public class QueryStringBuilderTests
     [Fact]
     public void EncodeSafeKey_GrowsForEscapedValue()
     {
-        QueryStringBuilder builder = new(stackalloc char[8]);
+        UrlStringBuilder builder = new(stackalloc char[8]);
         try
         {
             builder.EncodeSafeKey("x", "\u0800");
@@ -67,7 +67,7 @@ public class QueryStringBuilderTests
     [Fact]
     public void Encode_GrowsForEscapedKeyAndValue()
     {
-        QueryStringBuilder builder = new(stackalloc char[8]);
+        UrlStringBuilder builder = new(stackalloc char[8]);
         try
         {
             builder.Encode("\u0800", "\u0800");

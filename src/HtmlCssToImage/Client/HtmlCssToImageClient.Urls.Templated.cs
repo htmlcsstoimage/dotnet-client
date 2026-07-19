@@ -150,7 +150,7 @@ public partial class HtmlCssToImageClient
         RenderImageFormat? pathFormat,
         RenderImageOptions? options)
     {
-        QueryStringBuilder builder = new(stackalloc char[512]);
+        UrlStringBuilder builder = new(stackalloc char[512]);
         try
         {
             builder.AppendLiteral(_apiHost);

@@ -113,7 +113,7 @@ public sealed class RenderImageCrop
     }
 
     internal void AppendToQueryString(
-        ref QueryStringBuilder chars,
+        ref UrlStringBuilder chars,
         JsonObject? templateValues = null)
     {
         AspectRatio?.AppendToQueryString(
@@ -186,7 +186,7 @@ public sealed class RenderImageCrop
     }
 
     private static void AppendOriginIfNotNull(
-        ref QueryStringBuilder chars,
+        ref UrlStringBuilder chars,
         RenderImageCropOrigin? origin,
         ReadOnlySpan<char> key)
     {
@@ -197,7 +197,7 @@ public sealed class RenderImageCrop
     }
 
     private static void AppendPositionIfNotNull(
-        ref QueryStringBuilder chars,
+        ref UrlStringBuilder chars,
         RenderImageCropPosition? position,
         ReadOnlySpan<char> key)
     {
@@ -208,7 +208,7 @@ public sealed class RenderImageCrop
     }
 
     private static void AppendSizeWithTemplateFallback(
-        ref QueryStringBuilder chars,
+        ref UrlStringBuilder chars,
         RenderImageCropSize? size,
         JsonObject? templateValues,
         string key,

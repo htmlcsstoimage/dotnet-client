@@ -34,7 +34,7 @@ public sealed class RenderImageOptions
     public RenderImageCrop? Crop { get; set; }
 
     internal void AppendToBuilder(
-        ref QueryStringBuilder builder,
+        ref UrlStringBuilder builder,
         bool includeFormat = true,
         JsonObject? templateValues = null)
     {
@@ -122,7 +122,7 @@ public sealed class RenderImageOptions
         ArgumentNullException.ThrowIfNull(options);
 
         Span<char> initialBuffer = stackalloc char[512];
-        QueryStringBuilder builder = new(initialBuffer);
+        UrlStringBuilder builder = new(initialBuffer);
         try
         {
             builder.AppendLiteral(baseUrl.AsSpan().TrimEnd('/'));

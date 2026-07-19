@@ -7,7 +7,7 @@ namespace HtmlCssToImage;
 
 public partial class HtmlCssToImageClient
 {
-    internal static void CreateAndRenderUrlQueryString(CreateUrlImageRequest request, ref QueryStringBuilder builder)
+    internal static void CreateAndRenderUrlQueryString(CreateUrlImageRequest request, ref UrlStringBuilder builder)
     {
         builder.EncodeSafeKey("url", request.Url);
 
@@ -60,7 +60,7 @@ public partial class HtmlCssToImageClient
         AppendNumberIfNotNull("jumbo_max_height", request.JumboMaxHeight, ref builder);
     }
 
-    private static void AppendNumberIfNotNull<T>(ReadOnlySpan<char> key, T? value, ref QueryStringBuilder builder) where T : struct, INumber<T>
+    private static void AppendNumberIfNotNull<T>(ReadOnlySpan<char> key, T? value, ref UrlStringBuilder builder) where T : struct, INumber<T>
     {
         if (value != null)
         {
@@ -68,7 +68,7 @@ public partial class HtmlCssToImageClient
         }
     }
 
-    private static void AppendBoolIfTrue(ReadOnlySpan<char> key, bool? value, ref QueryStringBuilder builder)
+    private static void AppendBoolIfTrue(ReadOnlySpan<char> key, bool? value, ref UrlStringBuilder builder)
     {
         if (value == true)
         {
@@ -95,7 +95,7 @@ public partial class HtmlCssToImageClient
         RenderImageFormat? pathFormat,
         RenderImageOptions? options)
     {
-        QueryStringBuilder builder = new(stackalloc char[512]);
+        UrlStringBuilder builder = new(stackalloc char[512]);
         try
         {
             builder.AppendLiteral(_apiHost);
