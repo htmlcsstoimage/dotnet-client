@@ -8,7 +8,7 @@ using HtmlCssToImage.Models.Requests;
 namespace HtmlCssToImage.Benchmarks.Benchmarks;
 
 [MemoryDiagnoser]
-public class QueryStringBuilderBenchmark
+public class UrlStringBuilderBenchmark
 {
     private readonly CreateUrlImageRequest _request = new()
     {
