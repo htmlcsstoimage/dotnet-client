@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization.Metadata;
+using HtmlCssToImage.Models;
 using HtmlCssToImage.Models.Requests;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
@@ -14,6 +15,8 @@ public abstract class HCTI_OgMetaTagBase:ComponentBase
     [Inject] public IHtmlCssToImageClient HtmlCssToImageClient { get; set; } = null!;
 
     [Parameter] public string? OgMetaType { get; set; }
+
+    [Parameter] public RenderImageOptions? RenderOptions { get; set; }
 
     protected string? MetaUrl { get; set; }
 

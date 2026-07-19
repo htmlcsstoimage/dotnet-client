@@ -23,20 +23,57 @@ public class HCTI_Templated_OgMetaTag<T>:HCTI_OgMetaTagBase
     {
         if (TemplateValues is JsonObject jo)
         {
-            MetaUrl= HtmlCssToImageClient.CreateTemplatedImageUrl(TemplateId, jo, TemplateVersion);
+            MetaUrl = RenderOptions is null
+                ? HtmlCssToImageClient.CreateTemplatedImageUrl(TemplateId, jo, TemplateVersion)
+                : HtmlCssToImageClient.CreateTemplatedImageUrl(
+                    TemplateId,
+                    jo,
+                    TemplateVersion,
+                    RenderOptions);
         }
         else if(TemplateValues!=null)
         {
             if (TypeInfo != null)
             {
-                MetaUrl= HtmlCssToImageClient.CreateTemplatedImageUrl(TemplateId, TemplateValues, TypeInfo, TemplateVersion);
+                MetaUrl = RenderOptions is null
+                    ? HtmlCssToImageClient.CreateTemplatedImageUrl(
+                        TemplateId,
+                        TemplateValues,
+                        TypeInfo,
+                        TemplateVersion)
+                    : HtmlCssToImageClient.CreateTemplatedImageUrl(
+                        TemplateId,
+                        TemplateValues,
+                        TypeInfo,
+                        TemplateVersion,
+                        RenderOptions);
             }else if (JsonSerializerOptions != null)
             {
-                MetaUrl= HtmlCssToImageClient.CreateTemplatedImageUrl(TemplateId, TemplateValues, JsonSerializerOptions, TemplateVersion);
+                MetaUrl = RenderOptions is null
+                    ? HtmlCssToImageClient.CreateTemplatedImageUrl(
+                        TemplateId,
+                        TemplateValues,
+                        JsonSerializerOptions,
+                        TemplateVersion)
+                    : HtmlCssToImageClient.CreateTemplatedImageUrl(
+                        TemplateId,
+                        TemplateValues,
+                        JsonSerializerOptions,
+                        TemplateVersion,
+                        RenderOptions);
             }
             else
             {
-                MetaUrl= HtmlCssToImageClient.CreateTemplatedImageUrl(TemplateId, TemplateValues, TemplateVersion);
+                MetaUrl = RenderOptions is null
+                    ? HtmlCssToImageClient.CreateTemplatedImageUrl(
+                        TemplateId,
+                        TemplateValues,
+                        TemplateVersion)
+                    : HtmlCssToImageClient.CreateTemplatedImageUrl(
+                        TemplateId,
+                        TemplateValues,
+                        TemplateVersion,
+                        RenderOptions);
             }
 
         }

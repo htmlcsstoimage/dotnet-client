@@ -62,6 +62,7 @@ Use the `HCTI_Templated_OgMetaTag<T>` component to generate OG meta tags using a
 | `TypeInfo`              |          | A `System.Text.Json.JsonTypeInfo<T>` instance that will be used to serialize `TemplateValues`                 |
 | `JsonSerializerOptions` |          | A `System.Text.Json.JsonSerializerOptions` instance that will be used to serialize `TemplateValues` if provided |
 | `TemplateVersion`       |          | An optional version of the template to use, if not specified, the latest version will be used                 |
+| `RenderOptions`         |          | Optional output format, sizing, DPI, and cropping options supplied as a `RenderImageOptions` instance.        |
 | `OgMetaType`            |          | The type of meta tag to generate, such as `twitter:image`. When not specified, `og:image` will be used.       | 
 
 #### Template Values
@@ -77,6 +78,7 @@ Use the `HCTI_Url_OgMetaTag` component to generate an OG meta tag with a URL-gen
 | Parameter      | Required | Description                                                                                                                             |
 |----------------| :------: |-----------------------------------------------------------------------------------------------------------------------------------------|
 | `ImageRequest` | ✅ | An instance of [`HtmlCssToImage.Models.Requests.CreateUrlImageRequest`](../HtmlCssToImage/Models/Requests/CreateUrlImageRequest.cs) |
+| `RenderOptions` | | Optional output format, sizing, DPI, and cropping options supplied as a `RenderImageOptions` instance. |
 | `OgMetaType`   | | The type of meta tag to generate, such as `twitter:image`. When not specified, `og:image` will be used.                                 |
 
 #### Image Request

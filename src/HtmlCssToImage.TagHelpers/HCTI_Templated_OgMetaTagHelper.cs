@@ -31,17 +31,43 @@ public class HCTI_Templated_OgMetaTagHelper:HCTI_OgMetaTagHelperBase
     {
         if (TemplateValues is JsonObject jo)
         {
-            MetaUrl= _htmlCssToImageClient.CreateTemplatedImageUrl(TemplateId, jo, TemplateVersion);
+            MetaUrl = RenderOptions is null
+                ? _htmlCssToImageClient.CreateTemplatedImageUrl(TemplateId, jo, TemplateVersion)
+                : _htmlCssToImageClient.CreateTemplatedImageUrl(
+                    TemplateId,
+                    jo,
+                    TemplateVersion,
+                    RenderOptions);
         }
         else if(TemplateValues!=null)
         {
             if (JsonSerializerOptions != null)
             {
-                MetaUrl= _htmlCssToImageClient.CreateTemplatedImageUrl(TemplateId, TemplateValues, JsonSerializerOptions, TemplateVersion);
+                MetaUrl = RenderOptions is null
+                    ? _htmlCssToImageClient.CreateTemplatedImageUrl(
+                        TemplateId,
+                        TemplateValues,
+                        JsonSerializerOptions,
+                        TemplateVersion)
+                    : _htmlCssToImageClient.CreateTemplatedImageUrl(
+                        TemplateId,
+                        TemplateValues,
+                        JsonSerializerOptions,
+                        TemplateVersion,
+                        RenderOptions);
             }
             else
             {
-                MetaUrl= _htmlCssToImageClient.CreateTemplatedImageUrl(TemplateId, TemplateValues, TemplateVersion);
+                MetaUrl = RenderOptions is null
+                    ? _htmlCssToImageClient.CreateTemplatedImageUrl(
+                        TemplateId,
+                        TemplateValues,
+                        TemplateVersion)
+                    : _htmlCssToImageClient.CreateTemplatedImageUrl(
+                        TemplateId,
+                        TemplateValues,
+                        TemplateVersion,
+                        RenderOptions);
             }
 
         }

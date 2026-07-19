@@ -1,3 +1,4 @@
+using HtmlCssToImage.Models;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace HtmlCssToImage.TagHelpers;
@@ -12,6 +13,8 @@ public abstract class HCTI_OgMetaTagHelperBase : TagHelper
     }
 
     [HtmlAttributeName("og-meta-type")] public string? OgMetaType { get; set; }
+
+    [HtmlAttributeName("render-options")] public RenderImageOptions? RenderOptions { get; set; }
 
     protected string? MetaUrl { get; set; }
 
