@@ -237,5 +237,5 @@ public interface IHtmlCssToImageClient
     /// <param name="imageId">The unique identifier of the image for which the URL is to be generated.</param>
     /// <param name="options">The rendering options, such as format, DPI, or height, that define how the image should be processed and displayed.</param>
     /// <returns>A string representing the generated URL for accessing the specified image with the provided rendering options.</returns>
-    public string Ima`geUrl(string imageId, RenderImageOptions options);
+    public string ImageUrl(string imageId, RenderImageOptions options);
 }
