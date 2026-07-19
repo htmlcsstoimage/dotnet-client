@@ -20,7 +20,9 @@ public class HCTI_Url_OgMetaTagHelper:HCTI_OgMetaTagHelperBase
 
     protected override void SetMetaUrl()
     {
-         MetaUrl= _htmlCssToImageClient.CreateAndRenderUrl(ImageRequest);
+        MetaUrl = RenderOptions is null
+            ? _htmlCssToImageClient.CreateAndRenderUrl(ImageRequest)
+            : _htmlCssToImageClient.CreateAndRenderUrl(ImageRequest, RenderOptions);
     }
 
 }

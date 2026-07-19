@@ -61,6 +61,18 @@ public interface IHtmlCssToImageClient
     public string CreateAndRenderUrl(CreateUrlImageRequest request, RenderImageFormat format = RenderImageFormat.PNG);
 
     /// <summary>
+    /// Generates a URL for creating and rendering an image with output sizing and cropping options.
+    /// </summary>
+    /// <param name="request">
+    /// The <see cref="CreateUrlImageRequest"/> containing the source URL and browser rendering parameters.
+    /// </param>
+    /// <param name="options">
+    /// The output format, dimensions, DPI, and cropping options applied to the rendered image.
+    /// </param>
+    /// <returns>A signed URL for the image rendering request.</returns>
+    public string CreateAndRenderUrl(CreateUrlImageRequest request, RenderImageOptions options);
+
+    /// <summary>
     /// Generates a URL for creating an image using a predefined template, with customizable template values,
     /// optional template version, and specified output format.
     /// </summary>
@@ -82,6 +94,23 @@ public interface IHtmlCssToImageClient
     public string CreateTemplatedImageUrl(string templateId, JsonObject templateValues, long? templateVersion = null, RenderImageFormat format = RenderImageFormat.PNG);
 
     /// <summary>
+    /// Generates a templated image URL with output sizing and cropping options.
+    /// </summary>
+    /// <param name="templateId">The identifier of the template to render.</param>
+    /// <param name="templateValues">The values substituted into the template.</param>
+    /// <param name="templateVersion">The template version, or <see langword="null"/> for the latest version.</param>
+    /// <param name="options">
+    /// The output format, dimensions, DPI, and cropping options applied to the rendered image.
+    /// Render-option query keys are disambiguated when a template value uses the same key.
+    /// </param>
+    /// <returns>A signed URL for the templated image.</returns>
+    public string CreateTemplatedImageUrl(
+        string templateId,
+        JsonObject templateValues,
+        long? templateVersion,
+        RenderImageOptions options);
+
+    /// <summary>
     /// Generates a templated image URL based on the specified template identifier and template values.
     /// </summary>
     /// <param name="templateId">The identifier of the template to be used for rendering the image.</param>
@@ -93,6 +122,21 @@ public interface IHtmlCssToImageClient
     [RequiresDynamicCode("If AOT is needed, use one of the overloads with explicit type information")]
     public string CreateTemplatedImageUrl<T>(string templateId, T templateValues, long? templateVersion = null, RenderImageFormat format = RenderImageFormat.PNG);
 
+    /// <summary>
+    /// Generates a templated image URL from an object with output sizing and cropping options.
+    /// </summary>
+    /// <param name="templateId">The identifier of the template to render.</param>
+    /// <param name="templateValues">The object containing values substituted into the template.</param>
+    /// <param name="templateVersion">The template version, or <see langword="null"/> for the latest version.</param>
+    /// <param name="options">The output format, dimensions, DPI, and cropping options.</param>
+    /// <returns>A signed URL for the templated image.</returns>
+    [RequiresUnreferencedCode("If AOT is needed, use one of the overloads with explicit type information")]
+    [RequiresDynamicCode("If AOT is needed, use one of the overloads with explicit type information")]
+    public string CreateTemplatedImageUrl<T>(
+        string templateId,
+        T templateValues,
+        long? templateVersion,
+        RenderImageOptions options);
 
     /// <summary>
     /// Generates a templated image URL based on the specified template identifier and template values.
@@ -106,6 +150,22 @@ public interface IHtmlCssToImageClient
     public string CreateTemplatedImageUrl<T>(string templateId, T templateValues, JsonTypeInfo<T> typeInfo, long? templateVersion = null, RenderImageFormat format = RenderImageFormat.PNG);
 
     /// <summary>
+    /// Generates a templated image URL using source-generated JSON metadata and output options.
+    /// </summary>
+    /// <param name="templateId">The identifier of the template to render.</param>
+    /// <param name="templateValues">The object containing values substituted into the template.</param>
+    /// <param name="typeInfo">Source-generated JSON metadata for <typeparamref name="T"/>.</param>
+    /// <param name="templateVersion">The template version, or <see langword="null"/> for the latest version.</param>
+    /// <param name="options">The output format, dimensions, DPI, and cropping options.</param>
+    /// <returns>A signed URL for the templated image.</returns>
+    public string CreateTemplatedImageUrl<T>(
+        string templateId,
+        T templateValues,
+        JsonTypeInfo<T> typeInfo,
+        long? templateVersion,
+        RenderImageOptions options);
+
+    /// <summary>
     /// Generates a URL for a templated image based on the provided template identifier, template values, and optional parameters.
     /// </summary>
     /// <param name="templateId">The unique identifier of the template to use for image generation.</param>
@@ -116,6 +176,21 @@ public interface IHtmlCssToImageClient
     /// <returns>A string containing the URL of the generated templated image.</returns>
     public string CreateTemplatedImageUrl<T>(string templateId, T templateValues, JsonSerializerOptions jsonSerializerOptions, long? templateVersion = null, RenderImageFormat format = RenderImageFormat.PNG);
 
+    /// <summary>
+    /// Generates a templated image URL using the supplied JSON serializer configuration and output options.
+    /// </summary>
+    /// <param name="templateId">The identifier of the template to render.</param>
+    /// <param name="templateValues">The object containing values substituted into the template.</param>
+    /// <param name="jsonSerializerOptions">The JSON serializer configuration for <typeparamref name="T"/>.</param>
+    /// <param name="templateVersion">The template version, or <see langword="null"/> for the latest version.</param>
+    /// <param name="options">The output format, dimensions, DPI, and cropping options.</param>
+    /// <returns>A signed URL for the templated image.</returns>
+    public string CreateTemplatedImageUrl<T>(
+        string templateId,
+        T templateValues,
+        JsonSerializerOptions jsonSerializerOptions,
+        long? templateVersion,
+        RenderImageOptions options);
 
     /// <summary>
     /// Creates a new version of a template using the specified template ID and request parameters.
@@ -156,4 +231,11 @@ public interface IHtmlCssToImageClient
     public Task<ApiResult<PaginatedResponse<Template>?>> ListTemplatesAsync(int count = 10, long? nextPageStart = null, CancellationToken cancellationToken = default);
 
 
+    /// <summary>
+    /// Generates a URL for an image based on the specified image ID and rendering options.
+    /// </summary>
+    /// <param name="imageId">The unique identifier of the image for which the URL is to be generated.</param>
+    /// <param name="options">The rendering options, such as format, DPI, or height, that define how the image should be processed and displayed.</param>
+    /// <returns>A string representing the generated URL for accessing the specified image with the provided rendering options.</returns>
+    public string Ima`geUrl(string imageId, RenderImageOptions options);
 }

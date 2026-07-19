@@ -34,11 +34,13 @@ internal ref struct ArrayOrSpan<T>:IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Dispose()
     {
-        if (_rented != null)
+        if (_rented == null)
         {
-            ArrayPool<T>.Shared.Return(_rented);
-            _rented = null;
+            return;
         }
+
+        ArrayPool<T>.Shared.Return(_rented);
+        _rented = null;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -50,21 +52,29 @@ internal ref struct ArrayOrSpan<T>:IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void EnsureCapacity(int additionalCapacity)
     {
-        int requiredCapacity = Position + additionalCapacity;
-        if (requiredCapacity > Span.Length)
+        EnsureCapacity(Position, additionalCapacity);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void EnsureCapacity(int position, int additionalCapacity)
+    {
+        var requiredCapacity = position + additionalCapacity;
+        if (requiredCapacity <= Span.Length)
         {
-            var newSize = requiredCapacity + 128;
-            var newRented = ArrayPool<T>.Shared.Rent(newSize);
-
-            Span[..Position].CopyTo(newRented);
-
-            if (_rented != null)
-            {
-                ArrayPool<T>.Shared.Return(_rented);
-            }
-
-            _rented = newRented;
-            Span = _rented;
+            return;
         }
+
+        var newSize = requiredCapacity + 128;
+        var newRented = ArrayPool<T>.Shared.Rent(newSize);
+
+        Span[..position].CopyTo(newRented);
+
+        if (_rented != null)
+        {
+            ArrayPool<T>.Shared.Return(_rented);
+        }
+
+        _rented = newRented;
+        Span = _rented;
     }
 }

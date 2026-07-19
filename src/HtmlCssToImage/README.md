@@ -98,7 +98,42 @@ Read more about signed URLs in the [create-and-render docs](https://docs.htmlcss
 
 These URLs are tied to the API Key & API Id you provide when creating the client. If you change them or disable the keys, you'll need to generate new URLs.
 
+The signature covers the complete query string, including output sizing and cropping options. If you change any query parameter, generate a new signed URL.
+
 These methods are handy when you have a lot of content that may never be rendered, and want to render on-demand, as to not waste your image credits.
+
+### Output Sizing and Cropping
+
+Use `RenderImageOptions` with an existing image, a create-and-render request, or a template URL:
+
+```csharp
+var renderOptions = new RenderImageOptions
+{
+    Format = RenderImageFormat.WEBP,
+    Dpi = 144,
+    Width = 1200,
+    Crop = RenderImageCrop.Rectangle(
+        horizontal: RenderImageCropSpan.Sized(
+            RenderImageCropSize.Percent(80),
+            RenderImageCropOrigin.Center))
+};
+
+var existingImageUrl = client.ImageUrl("image-id", renderOptions);
+
+var createAndRenderUrl = client.CreateAndRenderUrl(
+    new CreateUrlImageRequest { Url = "https://example.com" },
+    renderOptions);
+
+var templatedImageUrl = client.CreateTemplatedImageUrl(
+    "template-id",
+    new JsonObject { ["title"] = "Hello" },
+    templateVersion: null,
+    renderOptions);
+```
+
+Crop positions and sizes use integer pixels or whole percentages. The [.NET cropping guide](docs/Cropping.md) walks through every crop shape, unit, and origin with complete examples. See the API's [cropping parameters](https://docs.htmlcsstoimage.com/getting-started/using-the-api/#cropping-parameters) for the corresponding raw query parameters.
+
+DPI must be greater than 30 and less than 600; width and height must be greater than zero. If your template model has keys that overlap with render options, the client automatically uses a fallback that the API understands.
 
 ## Performance & Native AOT
 
