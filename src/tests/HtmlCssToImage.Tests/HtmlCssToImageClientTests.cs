@@ -117,6 +117,27 @@ public class HtmlCssToImageClientTests
             uri.AbsolutePath.Split('/')[^2]);
     }
 
+    [Theory]
+    [InlineData(true, "true")]
+    [InlineData(false, "false")]
+    [InlineData(null, null)]
+    public void CreateAndRenderUrl_PreservesTransparentBackground(
+        bool? transparentBackground,
+        string? expected)
+    {
+        var client = CreateClient();
+        var request = new CreateUrlImageRequest
+        {
+            Url = "https://google.com",
+            TransparentBackground = transparentBackground
+        };
+
+        var result = client.CreateAndRenderUrl(request);
+        var query = HttpUtility.ParseQueryString(new Uri(result).Query);
+
+        Assert.Equal(expected, query["transparent_background"]);
+    }
+
     [Fact]
     public void CreateTemplatedImageUrl_WithVersion_IncludesTemplateVersionInQuery()
     {

@@ -51,6 +51,25 @@ public class CreateHtmlCssImageRequestTest
         Assert.Equal(GoogleFontsSingle, req?.GoogleFonts);
     }
 
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void SerializeCorrectlyWithTransparentBackground(bool transparentBackground)
+    {
+        var req = new CreateHtmlCssImageRequest
+        {
+            Html = "<b>Test</b>",
+            TransparentBackground = transparentBackground
+        };
+
+        var serialized = JsonSerializer.Serialize(req, JsonContext.Default.CreateHtmlCssImageRequest);
+        using var json = JsonDocument.Parse(serialized);
+
+        Assert.Equal(
+            transparentBackground,
+            json.RootElement.GetProperty("transparent_background").GetBoolean());
+    }
+
     [Fact]
     public void SerializeCorrectlyWithPdfOptions()
     {

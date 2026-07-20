@@ -58,6 +58,7 @@ public partial class HtmlCssToImageClient
 
         AppendNumberIfNotNull("jumbo_max_width", request.JumboMaxWidth, ref builder);
         AppendNumberIfNotNull("jumbo_max_height", request.JumboMaxHeight, ref builder);
+        AppendBoolIfNotNull("transparent_background", request.TransparentBackground, ref builder);
     }
 
     private static void AppendNumberIfNotNull<T>(ReadOnlySpan<char> key, T? value, ref UrlStringBuilder builder) where T : struct, INumber<T>
@@ -73,6 +74,14 @@ public partial class HtmlCssToImageClient
         if (value == true)
         {
             builder.EncodeSafeKeyValue(key, "true");
+        }
+    }
+
+    private static void AppendBoolIfNotNull(ReadOnlySpan<char> key, bool? value, ref UrlStringBuilder builder)
+    {
+        if (value != null)
+        {
+            builder.EncodeSafeKeyValue(key, value.Value ? "true" : "false");
         }
     }
 

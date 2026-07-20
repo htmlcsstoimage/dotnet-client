@@ -137,4 +137,10 @@ public class CreateTemplateRequest
     /// <see href="https://docs.htmlcsstoimage.com/guides/advanced/jumbo-images/"> Read the Jumbo Images Guide for more information.</see>
     /// </summary>
     public uint? JumboMaxHeight { get; set; }
+
+    /// <summary>
+    /// Gets or sets whether images created from this template should be rendered with a transparent background.
+    /// <see href="https://docs.htmlcsstoimage.com/parameters/transparent_background/">Read the transparent_background Guide for more information.</see>
+    /// </summary>
+    public bool? TransparentBackground { get; set; }
 }

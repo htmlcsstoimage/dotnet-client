@@ -160,5 +160,9 @@ public class Template
     /// </summary>
     public uint? JumboMaxHeight { get; init; }
 
+    /// <summary>
+    /// Gets or sets whether images created from this template are rendered with a transparent background.
+    /// </summary>
+    public bool? TransparentBackground { get; init; }
 
 }
