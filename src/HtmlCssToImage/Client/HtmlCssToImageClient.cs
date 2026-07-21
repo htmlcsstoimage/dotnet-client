@@ -39,7 +39,7 @@ public partial class HtmlCssToImageClient : IHtmlCssToImageClient
     internal const string CREATE_OR_GET_PATH = "/v1/image";
     private const string CREATE_AND_RENDER_PATH = $"{CREATE_OR_GET_PATH}/create-and-render";
     private const string CREATE_URL = $"{CREATE_OR_GET_PATH}?includeId=true";
-    private const string CREATE_BATCH_URL = $"{CREATE_OR_GET_PATH}/batch";
+    private const string BATCH_URL = $"{CREATE_OR_GET_PATH}/batch";
 
     private const string TEMPLATE_VERSION_QUERY_PARAM = "template_version";
 }

@@ -68,7 +68,7 @@ public class HtmlCssToImageClientTemplatesTests
                 Content = JsonContent.Create(expectedResponse, JsonContext.Default.PaginatedResponseTemplate)
             });
 
-        var result = await client.ListTemplatesAsync(cancellationToken: TestContext.Current.CancellationToken);
+        using var result = await client.ListTemplatesAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.True(result.Success);
         Assert.NotNull(result.Response);
@@ -95,7 +95,7 @@ public class HtmlCssToImageClientTemplatesTests
 
         var client = CreateClient("https://example.test");
 
-        await client.ListTemplatesAsync(cancellationToken: TestContext.Current.CancellationToken);
+        using var result = await client.ListTemplatesAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(capturedRequest);
         Assert.Equal(new Uri("https://example.test/v1/template?count=10"), capturedRequest.RequestUri);
@@ -123,7 +123,7 @@ public class HtmlCssToImageClientTemplatesTests
                 Content = JsonContent.Create(expectedResponse, JsonContext.Default.PaginatedResponseTemplate)
             });
 
-        var result = await client.ListTemplateVersionsAsync(templateId, count: 20, cancellationToken: TestContext.Current.CancellationToken);
+        using var result = await client.ListTemplateVersionsAsync(templateId, count: 20, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.True(result.Success);
         Assert.NotNull(result.Response);
@@ -147,7 +147,7 @@ public class HtmlCssToImageClientTemplatesTests
                 Content = JsonContent.Create(errorDetails, JsonContext.Default.ErrorDetails)
             });
 
-        var result = await client.ListTemplatesAsync(cancellationToken: TestContext.Current.CancellationToken);
+        using var result = await client.ListTemplatesAsync(cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.False(result.Success);
         Assert.Equal(401, result.StatusCode);
@@ -173,7 +173,7 @@ public class HtmlCssToImageClientTemplatesTests
                 Content = JsonContent.Create(new PaginatedResponse<Template> { Data = [], Pagination = new PaginatedResponse<Template>.PaginationInfo(null) }, JsonContext.Default.PaginatedResponseTemplate)
             });
 
-        await client.ListTemplatesAsync(count: inputCount, cancellationToken: TestContext.Current.CancellationToken);
+        using var result = await client.ListTemplatesAsync(count: inputCount, cancellationToken: TestContext.Current.CancellationToken);
         
         _handlerMock.Protected().Verify(
             "SendAsync",
