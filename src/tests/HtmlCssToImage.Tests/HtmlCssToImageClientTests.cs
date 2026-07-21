@@ -348,11 +348,95 @@ public class HtmlCssToImageClientTests
                 Content = JsonContent.Create(new { url = "https://hcti.io/v1/image/img_1", id = "img_1" })
             });
 
-        var result = await client.CreateImageAsync(request, TestContext.Current.CancellationToken);
+        using var result = await client.CreateImageAsync(request, TestContext.Current.CancellationToken);
 
         Assert.True(result.Success);
         Assert.NotNull(result.Response);
         Assert.Equal("img_1", result.Response.Id);
+    }
+
+    [Fact]
+    public async Task DeleteImageAsync_WhenAccepted_SendsDeleteAndReturnsTrue()
+    {
+        HttpRequestMessage? capturedRequest = null;
+        _handlerMock.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .Callback<HttpRequestMessage, CancellationToken>((request, _) => capturedRequest = request)
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.Accepted
+            });
+
+        var client = CreateClient();
+        using var result = await client.DeleteImageAsync("image/id", TestContext.Current.CancellationToken);
+
+        Assert.NotNull(capturedRequest);
+        Assert.Equal(HttpMethod.Delete, capturedRequest.Method);
+        Assert.Equal(new Uri("https://hcti.io/v1/image/image%2Fid"), capturedRequest.RequestUri);
+        Assert.True(result.Success);
+        Assert.Equal(202, result.StatusCode);
+        Assert.True(result.Response);
+    }
+
+    [Fact]
+    public async Task DeleteImageAsync_WhenError_PopulatesErrorDetails()
+    {
+        _handlerMock.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.NotFound,
+                Content = JsonContent.Create(new { message = "Image not found", error = "not_found" })
+            });
+
+        var client = CreateClient();
+        using var result = await client.DeleteImageAsync("missing-image", TestContext.Current.CancellationToken);
+
+        Assert.False(result.Success);
+        Assert.Equal(404, result.StatusCode);
+        Assert.Null(result.Response);
+        Assert.NotNull(result.ErrorDetails);
+        Assert.Equal("Image not found", result.ErrorDetails.Message);
+        Assert.Equal("not_found", result.ErrorDetails.ErrorType);
+    }
+
+    [Fact]
+    public async Task DeleteImageBatchAsync_SendsIdsInDeleteRequest()
+    {
+        HttpRequestMessage? capturedRequest = null;
+        _handlerMock.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .Callback<HttpRequestMessage, CancellationToken>((request, _) => capturedRequest = request)
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.Accepted
+            });
+
+        var client = CreateClient();
+        using var result = await client.DeleteImageBatchAsync(
+            ["image-1", "image-2"],
+            TestContext.Current.CancellationToken);
+
+        Assert.NotNull(capturedRequest);
+        Assert.Equal(HttpMethod.Delete, capturedRequest.Method);
+        Assert.Equal(new Uri("https://hcti.io/v1/image/batch"), capturedRequest.RequestUri);
+        var request = await capturedRequest.Content!.ReadFromJsonAsync<DeleteImageBatchRequest>(
+            JsonContext.Default.DeleteImageBatchRequest,
+            TestContext.Current.CancellationToken);
+        Assert.NotNull(request);
+        Assert.Equal(["image-1", "image-2"], request.Ids);
+        Assert.True(result.Success);
+        Assert.Equal(202, result.StatusCode);
+        Assert.True(result.Response);
     }
 
     [Fact]
@@ -374,7 +458,7 @@ public class HtmlCssToImageClientTests
         var client = CreateClient(DefaultHost);
         var request = new CreateHtmlCssImageRequest { Html = "<b>Test</b>" };
 
-        await client.CreateImageAsync(request, TestContext.Current.CancellationToken);
+        using var result = await client.CreateImageAsync(request, TestContext.Current.CancellationToken);
 
         Assert.NotNull(capturedRequest);
         Assert.Equal(new Uri("https://hcti.io/v1/image?includeId=true"), capturedRequest.RequestUri);
@@ -400,7 +484,7 @@ public class HtmlCssToImageClientTests
         var client = CreateClient(configuredBaseUrl);
         var request = new CreateHtmlCssImageRequest { Html = "<b>Test</b>" };
 
-        await client.CreateImageAsync(request, TestContext.Current.CancellationToken);
+        using var result = await client.CreateImageAsync(request, TestContext.Current.CancellationToken);
 
         Assert.NotNull(capturedRequest);
         Assert.Equal(new Uri("https://example.test/v1/image?includeId=true"), capturedRequest.RequestUri);
@@ -434,7 +518,7 @@ public class HtmlCssToImageClientTests
                 Content = JsonContent.Create(new { message = "Invalid request", error = "missing_params" })
             });
 
-        var result = await client.CreateImageBatchAsync(request, TestContext.Current.CancellationToken);
+        using var result = await client.CreateImageBatchAsync(request, TestContext.Current.CancellationToken);
 
         Assert.False(result.Success);
         Assert.Equal(400, result.StatusCode);

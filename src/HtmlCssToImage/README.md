@@ -30,6 +30,20 @@ var client = new HtmlCssToImageClient(http, options);
 
 If you're using ASP.NET Core or similar frameworks supporting Microsoft DI, check out the [HtmlCssToImage.DependencyInjection Package Docs](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage.DependencyInjection/README.md) for how to inject the client into your application.
 
+## Response Shape
+
+Most client methods that call the HCTI API return an [`ApiResult<T>`](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage/Models/Results/ApiResult.cs). Signed URL helpers return a `string` instead because they do not make an HTTP request.
+
+An `ApiResult<T>` provides:
+
+- `Response`: The typed response body when the request succeeds.
+- `ErrorDetails`: The typed API error when the request fails.
+- `Success` and `StatusCode`: A quick way to inspect the outcome.
+- `HttpResponseMessage`: The raw HTTP response for advanced cases.
+
+The raw `HttpResponseMessage` is included so you can inspect response headers, the originating `RequestMessage`, the HTTP version, reason phrase, and other transport-level details that are not part of the typed response.
+
+`ApiResult<T>` owns that raw response and implements `IDisposable`. Use `using` or `using var` for every result so the underlying response and content are released promptly.
 
 ## Creating Images
 You can generate images using your HCTI client with strongly typed parameters:
@@ -51,7 +65,7 @@ var html_request = new CreateHtmlCssImageRequest()
     ViewportHeight = 400
 };
 
-var html_image = await client.CreateImageAsync(html_request);
+using var html_image = await client.CreateImageAsync(html_request);
 
 if(html_image.Success)
 {
@@ -61,7 +75,21 @@ if(html_image.Success)
 }
 ```
 
-Image creation responds with an [`ApiResult<CreateImageResponse>`](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage/Models/Responses/CreateImageResponse.cs). [`ApiResult<T>`](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage/Models/Results/ApiResult.cs) is a simple wrapper around Api responses that provides an indicator of `Success` and potentially `ErrorDetails` if the request failed.
+## Deleting Images
+
+Delete one or more existing images from HCTI and clear them from the CDN using their image IDs:
+
+```csharp
+using var result = await client.DeleteImageAsync("your-image-id");
+
+if (!result.Success)
+{
+    Console.WriteLine(result.ErrorDetails.Message);
+}
+
+using var batchResult = await client.DeleteImageBatchAsync(
+    ["first-image-id", "second-image-id"]);
+```
 
 ### Template Helpers
 When creating a templated image, you can use static helper methods `FromObject<T>` on the `CreateTemplatedImageRequest` class to generate a template, providing serialization options for AOT/serialization control. See more below in the [Performance & Native AOT](#performance--native-aot) section.
@@ -84,9 +112,7 @@ Call `CreateImageBatchAsync<T>` on the client to create a batch of images from a
 You can construct a `CreateImageBatchRequest` object directly or use the overload on `HtmlCssToImageClient` that accepts `defaultOptions` and `variations` as parameters.
 
 
-Batch creation responds with an [`ApiResult<CreateImageResponse[]>`](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage/Models/Responses/CreateImageResponse.cs). [`ApiResult<T>`](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage/Models/Results/ApiResult.cs) is a simple wrapper around Api responses that provides an indicator of `Success` and potentially `ErrorDetails` if the request failed.
-
-If your request is successful, the `Response` property will be an array in the order of your `variations`.
+Batch creation responds with an [`ApiResult<CreateImageResponse[]>`](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage/Models/Responses/CreateImageResponse.cs). If your request is successful, the `Response` property will be an array in the order of your `variations`.
 
 ## Creating Image URLs
 

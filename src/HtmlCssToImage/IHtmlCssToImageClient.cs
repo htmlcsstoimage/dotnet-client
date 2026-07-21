@@ -25,6 +25,22 @@ public interface IHtmlCssToImageClient
     public Task<ApiResult<CreateImageResponse?>> CreateImageAsync<T>(T request, CancellationToken cancellationToken = default) where T : ICreateImageRequestBase;
 
     /// <summary>
+    /// Deletes an existing image and clears it from the CDN.
+    /// </summary>
+    /// <param name="imageId">The ID of the image to delete.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
+    /// <returns>An <c>ApiResult&lt;bool?&gt;</c> whose response is <see langword="true"/> when the delete request is accepted.</returns>
+    public Task<ApiResult<bool?>> DeleteImageAsync(string imageId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Deletes multiple existing images in one API call and clears them from the CDN.
+    /// </summary>
+    /// <param name="imageIds">The IDs of the images to delete.</param>
+    /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
+    /// <returns>An <c>ApiResult&lt;bool?&gt;</c> whose response is <see langword="true"/> when the batch delete request is accepted.</returns>
+    public Task<ApiResult<bool?>> DeleteImageBatchAsync(IEnumerable<string> imageIds, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Sends a batch request to create multiple images using the specified parameters.
     /// </summary>
     /// <param name="request">The batch request containing default options and variations for creating images.</param>

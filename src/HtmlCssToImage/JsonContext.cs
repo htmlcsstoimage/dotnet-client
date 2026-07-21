@@ -31,6 +31,7 @@ namespace HtmlCssToImage;
 /// - <see cref="CreateUrlImageRequest"/>
 /// - <see cref="CreateTemplatedImageRequest"/>
 /// - <see cref="CreateImageBatchRequest{T}"/> (for specific batch image types)
+/// - <see cref="DeleteImageBatchRequest"/>
 /// - <see cref="CreateImageBatchResponse"/>
 /// - <see cref="CreateImageResponse"/>
 /// - <see cref="ErrorDetails"/>
@@ -46,6 +47,7 @@ namespace HtmlCssToImage;
 [JsonSerializable(typeof(CreateTemplatedImageRequest))]
 [JsonSerializable(typeof(CreateImageBatchRequest<CreateUrlImageRequest>))]
 [JsonSerializable(typeof(CreateImageBatchRequest<CreateHtmlCssImageRequest>))]
+[JsonSerializable(typeof(DeleteImageBatchRequest))]
 [JsonSerializable(typeof(CreateImageBatchResponse))]
 [JsonSerializable(typeof(CreateImageResponse))]
 [JsonSerializable(typeof(ErrorDetails))]

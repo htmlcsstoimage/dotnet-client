@@ -31,7 +31,7 @@ var html_request = new CreateHtmlCssImageRequest()
     ViewportHeight = 200
 };
 
-var html_image = await client.CreateImageAsync(html_request);
+using var html_image = await client.CreateImageAsync(html_request);
 
 if(html_image.Success)
 {
