@@ -151,6 +151,11 @@ public class Template
     public string? ProxyId { get; init; }
 
     /// <summary>
+    /// Gets or sets the storage destination ID where images created from this template are saved.
+    /// </summary>
+    public string? StorageDestinationId { get; init; }
+
+    /// <summary>
     /// Gets or sets the maximum width of the rendered image in jumbo mode.
     /// </summary>
     public uint? JumboMaxWidth { get; init; }

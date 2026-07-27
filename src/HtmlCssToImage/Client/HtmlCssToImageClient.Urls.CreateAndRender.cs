@@ -56,6 +56,11 @@ public partial class HtmlCssToImageClient
             builder.EncodeSafeKey("proxy_id", request.ProxyId);
         }
 
+        if (!string.IsNullOrWhiteSpace(request.StorageDestinationId))
+        {
+            builder.EncodeSafeKey("storage_destination_id", request.StorageDestinationId);
+        }
+
         AppendNumberIfNotNull("jumbo_max_width", request.JumboMaxWidth, ref builder);
         AppendNumberIfNotNull("jumbo_max_height", request.JumboMaxHeight, ref builder);
         AppendBoolIfNotNull("transparent_background", request.TransparentBackground, ref builder);

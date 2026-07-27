@@ -102,6 +102,12 @@ public abstract class CreateImageCommonOptions
     public string? ProxyId { get; set; }
 
     /// <summary>
+    /// Gets or sets the storage destination ID where rendered images should be saved.
+    /// <see href="https://docs.htmlcsstoimage.com/guides/advanced/storage-destinations/">Read the Storage Destinations Guide for more information.</see>
+    /// </summary>
+    public string? StorageDestinationId { get; set; }
+
+    /// <summary>
     /// Gets or sets the maximum width of the rendered image in jumbo mode. Consumes extra renders, requires <see cref="JumboMaxHeight"/> to be defined as well.
     /// <see href="https://docs.htmlcsstoimage.com/guides/advanced/jumbo-images/"> Read the Jumbo Images Guide for more information.</see>
     /// </summary>

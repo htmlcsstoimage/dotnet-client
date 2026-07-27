@@ -139,6 +139,22 @@ public class HtmlCssToImageClientTests
     }
 
     [Fact]
+    public void CreateAndRenderUrl_IncludesStorageDestinationId()
+    {
+        var client = CreateClient();
+        var request = new CreateUrlImageRequest
+        {
+            Url = "https://google.com",
+            StorageDestinationId = "storage-destination-id"
+        };
+
+        var result = client.CreateAndRenderUrl(request);
+        var query = HttpUtility.ParseQueryString(new Uri(result).Query);
+
+        Assert.Equal("storage-destination-id", query["storage_destination_id"]);
+    }
+
+    [Fact]
     public void CreateTemplatedImageUrl_WithVersion_IncludesTemplateVersionInQuery()
     {
         var client = CreateClient();
