@@ -23,6 +23,30 @@ public class CreateUrlImageRequest:CreateImageCommonOptions, IBatchAllowedImageR
     public string? Css { get; set; }
 
     /// <summary>
+    /// Gets or sets custom HTTP headers for top-level requests to the requested URL's origin and any <see cref="AdditionalHeaderOrigins"/>.
+    /// <see href="https://docs.htmlcsstoimage.com/parameters/headers/">Read the headers documentation for more information.</see>
+    /// </summary>
+    public Dictionary<string, string>? Headers { get; set; }
+
+    /// <summary>
+    /// Gets or sets additional exact HTTP or HTTPS origins allowed to receive custom <see cref="Headers"/>.
+    /// <see href="https://docs.htmlcsstoimage.com/parameters/headers/#additional-header-origins">Read the additional_header_origins documentation for more information.</see>
+    /// </summary>
+    public string[]? AdditionalHeaderOrigins { get; set; }
+
+    /// <summary>
+    /// Gets or sets whether custom <see cref="Headers"/> should also be sent with subrequests to allowed origins.
+    /// <see href="https://docs.htmlcsstoimage.com/parameters/headers/#include-headers-on-subrequests">Read the subrequest header documentation for more information.</see>
+    /// </summary>
+    public bool? IncludeHeadersOnSubrequests { get; set; }
+
+    /// <summary>
+    /// Gets or sets whether the top-level page request should include <c>X-HCTI-SCREENSHOT: 1</c>.
+    /// <see href="https://docs.htmlcsstoimage.com/parameters/identify_as_hcti/">Read the identify_as_hcti documentation for more information.</see>
+    /// </summary>
+    public bool? IdentifyAsHcti { get; set; }
+
+    /// <summary>
     /// Indicates whether the screenshot should capture the entire webpage in full height.
     /// <see href="https://docs.htmlcsstoimage.com/parameters/full_screen/">Read the full_screen Guide for more information.</see>
     /// </summary>

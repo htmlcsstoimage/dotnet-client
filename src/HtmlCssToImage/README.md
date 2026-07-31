@@ -75,6 +75,27 @@ if(html_image.Success)
 }
 ```
 
+For URL screenshots, `Headers` sends custom headers with the top-level page request:
+
+```csharp
+var urlRequest = new CreateUrlImageRequest
+{
+    Url = "https://example.com/private-report",
+    Headers = new Dictionary<string, string>
+    {
+        ["Authorization"] = "Bearer short-lived-token",
+        ["X-Preview-Mode"] = "enabled"
+    },
+    AdditionalHeaderOrigins = ["https://api.example.com"],
+    IncludeHeadersOnSubrequests = true,
+    IdentifyAsHcti = true
+};
+
+using var urlImage = await client.CreateImageAsync(urlRequest);
+```
+
+Custom headers are restricted to the requested URL's origin. Set `IncludeHeadersOnSubrequests` when same-origin resources also require them, and use `AdditionalHeaderOrigins` to allow an exact cross-origin scheme, host, and port. The [custom headers documentation](https://docs.htmlcsstoimage.com/parameters/headers/) covers request security and the create-and-render format. Avoid putting secrets in signed image URLs.
+
 ## Deleting Images
 
 Delete one or more existing images from HCTI and clear them from the CDN using their image IDs:

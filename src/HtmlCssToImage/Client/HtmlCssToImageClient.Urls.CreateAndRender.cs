@@ -64,6 +64,25 @@ public partial class HtmlCssToImageClient
         AppendNumberIfNotNull("jumbo_max_width", request.JumboMaxWidth, ref builder);
         AppendNumberIfNotNull("jumbo_max_height", request.JumboMaxHeight, ref builder);
         AppendBoolIfNotNull("transparent_background", request.TransparentBackground, ref builder);
+
+        if (request.Headers != null)
+        {
+            foreach (var header in request.Headers)
+            {
+                builder.EncodeSafeKey("headers", $"{header.Key}:{header.Value}");
+            }
+        }
+
+        if (request.AdditionalHeaderOrigins != null)
+        {
+            foreach (var origin in request.AdditionalHeaderOrigins)
+            {
+                builder.EncodeSafeKey("additional_header_origins", origin);
+            }
+        }
+
+        AppendBoolIfTrue("include_headers_on_subrequests", request.IncludeHeadersOnSubrequests, ref builder);
+        AppendBoolIfTrue("identify_as_hcti", request.IdentifyAsHcti, ref builder);
     }
 
     private static void AppendNumberIfNotNull<T>(ReadOnlySpan<char> key, T? value, ref UrlStringBuilder builder) where T : struct, INumber<T>

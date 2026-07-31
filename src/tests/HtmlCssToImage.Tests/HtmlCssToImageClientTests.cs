@@ -155,6 +155,48 @@ public class HtmlCssToImageClientTests
     }
 
     [Fact]
+    public void CreateAndRenderUrl_IncludesRepeatedHeadersAndHeaderOptions()
+    {
+        var client = CreateClient();
+        var request = new CreateUrlImageRequest
+        {
+            Url = "https://example.com/private",
+            Headers = new Dictionary<string, string>
+            {
+                ["Authorization"] = "Bearer test:value",
+                ["X-Preview-Mode"] = "enabled"
+            },
+            AdditionalHeaderOrigins =
+            [
+                "https://api.example.com",
+                "https://assets.example.com:8443"
+            ],
+            IncludeHeadersOnSubrequests = true,
+            IdentifyAsHcti = true
+        };
+
+        var result = client.CreateAndRenderUrl(request);
+        var uri = new Uri(result);
+        var query = HttpUtility.ParseQueryString(uri.Query);
+        var headerValues = query.GetValues("headers");
+        var additionalHeaderOrigins = query.GetValues("additional_header_origins");
+
+        Assert.NotNull(headerValues);
+        Assert.Equal(
+            ["Authorization:Bearer test:value", "X-Preview-Mode:enabled"],
+            headerValues);
+        Assert.NotNull(additionalHeaderOrigins);
+        Assert.Equal(
+            ["https://api.example.com", "https://assets.example.com:8443"],
+            additionalHeaderOrigins);
+        Assert.Equal("true", query["include_headers_on_subrequests"]);
+        Assert.Equal("true", query["identify_as_hcti"]);
+        Assert.Equal(
+            HexLowerHmac(_options.ApiKey, uri.Query[1..]),
+            uri.AbsolutePath.Split('/')[^1]);
+    }
+
+    [Fact]
     public void CreateTemplatedImageUrl_WithVersion_IncludesTemplateVersionInQuery()
     {
         var client = CreateClient();
@@ -369,6 +411,58 @@ public class HtmlCssToImageClientTests
         Assert.True(result.Success);
         Assert.NotNull(result.Response);
         Assert.Equal("img_1", result.Response.Id);
+    }
+
+    [Fact]
+    public async Task CreateImageAsync_SerializesUrlHeadersAndHeaderOptions()
+    {
+        HttpRequestMessage? capturedRequest = null;
+        _handlerMock.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .Callback<HttpRequestMessage, CancellationToken>((request, _) => capturedRequest = request)
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = JsonContent.Create(new { url = "https://hcti.io/v1/image/img_1", id = "img_1" })
+            });
+
+        var client = CreateClient();
+        var request = new CreateUrlImageRequest
+        {
+            Url = "https://example.com/private",
+            Headers = new Dictionary<string, string>
+            {
+                ["Cookie"] = "session=test",
+                ["Authorization"] = "Bearer test"
+            },
+            AdditionalHeaderOrigins =
+            [
+                "https://api.example.com",
+                "https://assets.example.com:8443"
+            ],
+            IncludeHeadersOnSubrequests = true,
+            IdentifyAsHcti = true
+        };
+
+        using var result = await client.CreateImageAsync(request, TestContext.Current.CancellationToken);
+
+        Assert.NotNull(capturedRequest);
+        var json = await capturedRequest.Content!.ReadAsStringAsync(TestContext.Current.CancellationToken);
+        using var document = JsonDocument.Parse(json);
+        var root = document.RootElement;
+        var headers = root.GetProperty("headers");
+
+        Assert.Equal("session=test", headers.GetProperty("Cookie").GetString());
+        Assert.Equal("Bearer test", headers.GetProperty("Authorization").GetString());
+        var additionalHeaderOrigins = root.GetProperty("additional_header_origins");
+        Assert.Equal(2, additionalHeaderOrigins.GetArrayLength());
+        Assert.Equal("https://api.example.com", additionalHeaderOrigins[0].GetString());
+        Assert.Equal("https://assets.example.com:8443", additionalHeaderOrigins[1].GetString());
+        Assert.True(root.GetProperty("include_headers_on_subrequests").GetBoolean());
+        Assert.True(root.GetProperty("identify_as_hcti").GetBoolean());
     }
 
     [Fact]
