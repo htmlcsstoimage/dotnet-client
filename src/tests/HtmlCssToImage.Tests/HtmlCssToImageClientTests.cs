@@ -612,6 +612,18 @@ public class HtmlCssToImageClientTests
     }
 
     [Fact]
+    public void CreateAndRenderUrl_DoesNotIncludePostOnlyDedupeDuration()
+    {
+        var client = CreateClient();
+        var request = new CreateUrlImageRequest { Url = "https://google.com", DedupeDurationS = 3600 };
+
+        var result = client.CreateAndRenderUrl(request);
+        var query = HttpUtility.ParseQueryString(new Uri(result).Query);
+
+        Assert.Null(query["dedupe_duration_s"]);
+    }
+
+    [Fact]
     public async Task CreateImageBatchAsync_WhenError_PopulatesErrorDetails()
     {
         var client = CreateClient();

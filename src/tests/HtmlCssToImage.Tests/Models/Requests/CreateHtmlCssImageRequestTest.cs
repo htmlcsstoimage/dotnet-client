@@ -71,6 +71,21 @@ public class CreateHtmlCssImageRequestTest
     }
 
     [Fact]
+    public void SerializeCorrectlyWithDedupeDuration()
+    {
+        var req = new CreateHtmlCssImageRequest
+        {
+            Html = "<b>Test</b>",
+            DedupeDurationS = 3600
+        };
+
+        var serialized = JsonSerializer.Serialize(req, JsonContext.Default.CreateHtmlCssImageRequest);
+        using var json = JsonDocument.Parse(serialized);
+
+        Assert.Equal(3600u, json.RootElement.GetProperty("dedupe_duration_s").GetUInt32());
+    }
+
+    [Fact]
     public void SerializeCorrectlyWithPdfOptions()
     {
 

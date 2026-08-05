@@ -133,13 +133,13 @@ public class CreateTemplateRequest
     public string? StorageDestinationId { get; set; }
 
     /// <summary>
-    /// Gets or sets the maximum width of the rendered image in jumbo mode. Consumes extra renders, requires <see cref="JumboMaxHeight"/> to be defined as well.
+    /// Gets or sets the maximum width of the rendered image in jumbo mode. Consumes additional image credits, requires <see cref="JumboMaxHeight"/> to be defined as well.
     /// <see href="https://docs.htmlcsstoimage.com/guides/advanced/jumbo-images/"> Read the Jumbo Images Guide for more information.</see>
     /// </summary>
     public uint? JumboMaxWidth { get; set; }
 
     /// <summary>
-    /// Gets or sets the maximum height of the rendered image in jumbo mode. Consumes extra renders, requires <see cref="JumboMaxWidth"/> to be defined as well.
+    /// Gets or sets the maximum height of the rendered image in jumbo mode. Consumes additional image credits, requires <see cref="JumboMaxWidth"/> to be defined as well.
     /// <see href="https://docs.htmlcsstoimage.com/guides/advanced/jumbo-images/"> Read the Jumbo Images Guide for more information.</see>
     /// </summary>
     public uint? JumboMaxHeight { get; set; }
