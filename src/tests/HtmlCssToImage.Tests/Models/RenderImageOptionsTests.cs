@@ -117,6 +117,17 @@ public class RenderImageOptionsTests
         Assert.Equal("https://hcti.io/v1/image/image-id", result);
     }
 
+    [Fact]
+    public void ToUrl_WithPdfFormat_AppendsPdfExtension()
+    {
+        var result = RenderImageOptions.ToUrl(
+            BaseUrl,
+            ImageId,
+            new RenderImageOptions { Format = RenderImageFormat.PDF });
+
+        Assert.Equal("https://hcti.io/v1/image/image-id.pdf", result);
+    }
+
     [Theory]
     [InlineData(30)]
     [InlineData(600)]

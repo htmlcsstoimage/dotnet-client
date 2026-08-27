@@ -23,9 +23,25 @@ dotnet add package HtmlCssToImage
 Creating a new instance of the `HtmlCssToImageClient`:
 
 ```csharp
-var options = new HtmlCssToImageClientOptions("api-id", "api-key");
+var options = new HtmlCssToImageOptions("api-id", "api-key");
 var http = new HttpClient();
 var client = new HtmlCssToImageClient(http, options);
+```
+
+To use the default `HCTI_API_ID` and `HCTI_API_KEY` environment variables:
+
+```csharp
+var options = HtmlCssToImageOptions.FromEnvironmentVariables();
+var http = new HttpClient();
+var client = new HtmlCssToImageClient(http, options);
+```
+
+You can pass different environment variable names when needed:
+
+```csharp
+var options = HtmlCssToImageOptions.FromEnvironmentVariables(
+    "MY_HCTI_API_ID",
+    "MY_HCTI_API_KEY");
 ```
 
 If you're using ASP.NET Core or similar frameworks supporting Microsoft DI, check out the [HtmlCssToImage.DependencyInjection Package Docs](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage.DependencyInjection/README.md) for how to inject the client into your application.

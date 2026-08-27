@@ -57,6 +57,7 @@ public class HtmlCssToImageClientTests
     [InlineData(QueryStringType.None,RenderImageFormat.PNG)]
     [InlineData(QueryStringType.None,RenderImageFormat.JPG)]
     [InlineData(QueryStringType.None,RenderImageFormat.WEBP)]
+    [InlineData(QueryStringType.None,RenderImageFormat.PDF)]
     [InlineData(QueryStringType.Numbers,null)]
     [InlineData(QueryStringType.Numbers,RenderImageFormat.WEBP)]
     [InlineData(QueryStringType.Emoji,null)]
@@ -115,6 +116,82 @@ public class HtmlCssToImageClientTests
         Assert.Equal(
             HexLowerHmac(_options.ApiKey, uri.Query[1..]),
             uri.AbsolutePath.Split('/')[^2]);
+    }
+
+    [Fact]
+    public void CreateAndRenderUrl_UsesRequestFormatWhenNoOverrideIsProvided()
+    {
+        var client = CreateClient();
+        var request = new CreateUrlImageRequest
+        {
+            Url = "https://google.com",
+            Format = RenderImageFormat.WEBP
+        };
+
+        var uri = new Uri(client.CreateAndRenderUrl(request));
+
+        Assert.EndsWith("/webp", uri.AbsolutePath);
+    }
+
+    [Fact]
+    public void CreateAndRenderUrl_ExplicitFormatOverridesRequestFormat()
+    {
+        var client = CreateClient();
+        var request = new CreateUrlImageRequest
+        {
+            Url = "https://google.com",
+            Format = RenderImageFormat.WEBP
+        };
+
+        var uri = new Uri(client.CreateAndRenderUrl(request, RenderImageFormat.PNG));
+
+        Assert.DoesNotContain("/webp", uri.AbsolutePath);
+        Assert.Equal(
+            HexLowerHmac(_options.ApiKey, uri.Query[1..]),
+            uri.AbsolutePath.Split('/')[^1]);
+    }
+
+    [Fact]
+    public void ImageCreationRequests_SerializeFormat()
+    {
+        var htmlRequest = new CreateHtmlCssImageRequest
+        {
+            Html = "<b>Test</b>",
+            Format = RenderImageFormat.WEBP
+        };
+        var templatedRequest = new CreateTemplatedImageRequest
+        {
+            TemplateId = "tpl_123",
+            TemplateValues = new JsonObject { ["title"] = "Hello" },
+            Format = RenderImageFormat.PDF
+        };
+        var batchRequest = new CreateImageBatchRequest<CreateHtmlCssImageRequest>
+        {
+            DefaultOptions = new CreateHtmlCssImageRequest
+            {
+                Html = "<b>Default</b>",
+                Format = RenderImageFormat.PNG
+            }
+        };
+        batchRequest.Variations.Add(htmlRequest);
+
+        using var htmlJson = JsonDocument.Parse(
+            JsonSerializer.Serialize(htmlRequest, JsonContext.Default.CreateHtmlCssImageRequest));
+        using var templatedJson = JsonDocument.Parse(
+            JsonSerializer.Serialize(templatedRequest, JsonContext.Default.CreateTemplatedImageRequest));
+        using var batchJson = JsonDocument.Parse(
+            JsonSerializer.Serialize(
+                batchRequest,
+                JsonContext.Default.CreateImageBatchRequestCreateHtmlCssImageRequest));
+
+        Assert.Equal("webp", htmlJson.RootElement.GetProperty("format").GetString()!.ToLowerInvariant());
+        Assert.Equal("pdf", templatedJson.RootElement.GetProperty("format").GetString()!.ToLowerInvariant());
+        Assert.Equal(
+            "png",
+            batchJson.RootElement.GetProperty("default_options").GetProperty("format").GetString()!.ToLowerInvariant());
+        Assert.Equal(
+            "webp",
+            batchJson.RootElement.GetProperty("variations")[0].GetProperty("format").GetString()!.ToLowerInvariant());
     }
 
     [Theory]

@@ -16,5 +16,9 @@ public enum RenderImageFormat
     /// <summary>
     /// webp format
     /// </summary>
-    WEBP
+    WEBP,
+    /// <summary>
+    /// pdf format
+    /// </summary>
+    PDF
 }

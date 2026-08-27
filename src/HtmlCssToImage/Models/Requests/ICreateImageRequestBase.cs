@@ -15,5 +15,16 @@ namespace HtmlCssToImage.Models.Requests;
 [JsonDerivedType(typeof(CreateTemplatedImageRequest))]
 public interface ICreateImageRequestBase
 {
-
+    /// <summary>
+    /// Gets or sets the file format used in the URL returned by the image creation request.
+    /// </summary>
+    /// <remarks>
+    /// This option is supported for HTML/CSS, URL, and templated image requests, including batch requests. It only changes the extension of the initially returned URL; it does not change the stored image definition or prevent the image from being rendered in another supported format.
+    /// When omitted, the API returns its default image URL.
+    /// <para>
+    /// See <see href="https://docs.htmlcsstoimage.com/getting-started/using-the-api/#file-formats">the file format documentation</see>
+    /// for supported formats and URL examples.
+    /// </para>
+    /// </remarks>
+    public RenderImageFormat? Format { get; set; }
 }

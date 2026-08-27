@@ -9,6 +9,7 @@ internal static class Mappers
         RenderImageFormat.PNG => "png",
         RenderImageFormat.JPG => "jpg",
         RenderImageFormat.WEBP => "webp",
+        RenderImageFormat.PDF => "pdf",
         _ => throw new ArgumentOutOfRangeException(nameof(format), format, null)
     };
     internal static string RenderFormatToExtensionWithDot(this RenderImageFormat format) => $".{RenderFormatToExtensionWithoutDot(format)}";

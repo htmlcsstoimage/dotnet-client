@@ -15,9 +15,25 @@ dotnet add package HtmlCssToImage
 ### 2) Create a client:
 
 ```csharp
-var options = new HtmlCssToImageClientOptions("api-id", "api-key");
+var options = new HtmlCssToImageOptions("api-id", "api-key");
 var http = new HttpClient();
 var client = new HtmlCssToImageClient(http, options);
+```
+
+You can also load the credentials from `HCTI_API_ID` and `HCTI_API_KEY`:
+
+```csharp
+var options = HtmlCssToImageOptions.FromEnvironmentVariables();
+var http = new HttpClient();
+var client = new HtmlCssToImageClient(http, options);
+```
+
+Pass custom variable names when your application uses different names:
+
+```csharp
+var options = HtmlCssToImageOptions.FromEnvironmentVariables(
+    "MY_HCTI_API_ID",
+    "MY_HCTI_API_KEY");
 ```
 
 ### 3) Generate an image!

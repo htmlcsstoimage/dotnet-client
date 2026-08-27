@@ -37,4 +37,23 @@ public class HtmlCssToImageOptions
         ApiId = apiId;
         ApiKey = apiKey;
     }
+
+
+    /// <summary>
+    /// Creates an instance of <see cref="HtmlCssToImageOptions"/> using API credentials retrieved from environment variables.
+    /// </summary>
+    /// <param name="apiIdEnvVarName">
+    /// The name of the environment variable that contains the API ID. Defaults to "HCTI_API_ID".
+    /// </param>
+    /// <param name="apiKeyEnvVarName">
+    /// The name of the environment variable that contains the API key. Defaults to "HCTI_API_KEY".
+    /// </param>
+    /// <return>
+    /// An instance of <see cref="HtmlCssToImageOptions"/> populated with the API ID and API key retrieved from the specified environment variables.
+    /// </return>
+    public static HtmlCssToImageOptions FromEnvironmentVariables(string apiIdEnvVarName="HCTI_API_ID", string apiKeyEnvVarName="HCTI_API_KEY")
+    {
+        return new HtmlCssToImageOptions(Environment.GetEnvironmentVariable(apiIdEnvVarName )!,
+            Environment.GetEnvironmentVariable(apiKeyEnvVarName)!);
+    }
 };

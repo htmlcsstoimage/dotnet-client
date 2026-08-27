@@ -9,7 +9,7 @@ namespace HtmlCssToImage.Models.Requests;
 /// </summary>
 [JsonDerivedType(typeof(CreateHtmlCssImageRequest))]
 [JsonDerivedType(typeof(CreateUrlImageRequest))]
-public abstract class CreateImageCommonOptions
+public abstract class CreateImageCommonOptions:ICreateImageRequestBase
 {
     /// <summary>
     /// A CSS selector to target a specific element on the page. The API will crop the image to the dimensions of this element.
@@ -131,4 +131,8 @@ public abstract class CreateImageCommonOptions
     /// <see href="https://docs.htmlcsstoimage.com/parameters/transparent_background/">Read the transparent_background Guide for more information.</see>
     /// </summary>
     public bool? TransparentBackground { get; set; }
+
+
+    /// <inheritdoc />
+    public RenderImageFormat? Format { get; set; }
 }

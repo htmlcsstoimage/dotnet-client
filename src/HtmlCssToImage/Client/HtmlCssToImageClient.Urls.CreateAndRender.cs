@@ -7,6 +7,61 @@ namespace HtmlCssToImage;
 
 public partial class HtmlCssToImageClient
 {
+    /// <inheritdoc />
+    public string CreateAndRenderUrl(CreateUrlImageRequest request) => CreateAndRenderUrl(request, request.Format, null);
+
+    /// <inheritdoc />
+    public string CreateAndRenderUrl(CreateUrlImageRequest request, RenderImageFormat format)
+    {
+        var pathFormat = format == RenderImageFormat.PNG ? null : (RenderImageFormat?)format;
+        return CreateAndRenderUrl(request, pathFormat, null);
+    }
+
+    /// <inheritdoc />
+    public string CreateAndRenderUrl(CreateUrlImageRequest request, RenderImageOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        return CreateAndRenderUrl(request, options.Format ?? request.Format, options);
+    }
+
+    private string CreateAndRenderUrl(CreateUrlImageRequest request, RenderImageFormat? pathFormat, RenderImageOptions? options)
+    {
+        UrlStringBuilder builder = new(stackalloc char[512]);
+        try
+        {
+            builder.AppendLiteral(_apiHost);
+            builder.AppendLiteral(CREATE_AND_RENDER_PATH);
+            builder.AppendLiteral('/');
+            builder.AppendLiteral(_apiId);
+            builder.AppendLiteral('/');
+            var tokenPosition = builder.ReserveLiteral(HmacToken.TokenLength);
+
+            if (pathFormat.HasValue)
+            {
+                builder.AppendLiteral('/');
+                builder.AppendLiteral(pathFormat.Value.RenderFormatToExtensionWithoutDot());
+            }
+
+            CreateAndRenderUrlQueryString(request, ref builder);
+            options?.AppendToBuilder(ref builder, includeFormat: false);
+
+            var queryString = builder.QueryString(false);
+            HmacToken.WriteToken(
+                queryString,
+                _apiKey,
+                builder.ReservedLiteral(tokenPosition, HmacToken.TokenLength));
+
+            return builder.FullSpan.ToString();
+        }
+        finally
+        {
+            builder.Dispose();
+        }
+    }
+
+    /// <inheritdoc />
+    public string ImageUrl(string imageId, RenderImageOptions options) => RenderImageOptions.ToUrl(_apiHost, imageId, options);
+
     internal static void CreateAndRenderUrlQueryString(CreateUrlImageRequest request, ref UrlStringBuilder builder)
     {
         builder.EncodeSafeKey("url", request.Url);
@@ -108,60 +163,4 @@ public partial class HtmlCssToImageClient
             builder.EncodeSafeKeyValue(key, value.Value ? "true" : "false");
         }
     }
-
-    /// <inheritdoc />
-    public string CreateAndRenderUrl(CreateUrlImageRequest request, RenderImageFormat format = RenderImageFormat.PNG)
-    {
-        var pathFormat = format == RenderImageFormat.PNG ? null : (RenderImageFormat?)format;
-        return CreateAndRenderUrl(request, pathFormat, null);
-    }
-
-    /// <inheritdoc />
-    public string CreateAndRenderUrl(CreateUrlImageRequest request, RenderImageOptions options)
-    {
-        ArgumentNullException.ThrowIfNull(options);
-        return CreateAndRenderUrl(request, options.Format, options);
-    }
-
-    private string CreateAndRenderUrl(
-        CreateUrlImageRequest request,
-        RenderImageFormat? pathFormat,
-        RenderImageOptions? options)
-    {
-        UrlStringBuilder builder = new(stackalloc char[512]);
-        try
-        {
-            builder.AppendLiteral(_apiHost);
-            builder.AppendLiteral(CREATE_AND_RENDER_PATH);
-            builder.AppendLiteral('/');
-            builder.AppendLiteral(_apiId);
-            builder.AppendLiteral('/');
-            var tokenPosition = builder.ReserveLiteral(HmacToken.TokenLength);
-
-            if (pathFormat.HasValue)
-            {
-                builder.AppendLiteral('/');
-                builder.AppendLiteral(pathFormat.Value.RenderFormatToExtensionWithoutDot());
-            }
-
-            CreateAndRenderUrlQueryString(request, ref builder);
-            options?.AppendToBuilder(ref builder, includeFormat: false);
-
-            var queryString = builder.QueryString(false);
-            HmacToken.WriteToken(
-                queryString,
-                _apiKey,
-                builder.ReservedLiteral(tokenPosition, HmacToken.TokenLength));
-
-            return builder.FullSpan.ToString();
-        }
-        finally
-        {
-            builder.Dispose();
-        }
-    }
-
-    /// <inheritdoc />
-    public string ImageUrl(string imageId, RenderImageOptions options) =>
-        RenderImageOptions.ToUrl(_apiHost, imageId, options);
 }

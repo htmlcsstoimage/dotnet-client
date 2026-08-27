@@ -40,6 +40,9 @@ public class CreateTemplatedImageRequest:ICreateImageRequestBase
     /// </remarks>
     public required JsonObject TemplateValues { get; set; }
 
+    /// <inheritdoc />
+    public RenderImageFormat? Format { get; set; }
+
     /// <summary>
     /// Creates a new <see cref="CreateTemplatedImageRequest"/> using the provided template values, template ID, and an optional template version.
     /// </summary>
