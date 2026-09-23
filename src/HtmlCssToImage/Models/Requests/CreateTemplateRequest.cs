@@ -65,7 +65,7 @@ public class CreateTemplateRequest
     public bool? MaxRenderOnce { get; set; }
 
     /// <summary>
-    /// Twemoji is used to render emoji as a fallback for native emoji fonts. This option will disable that behavior.
+    /// Templates use Twemoji by default. Set true to use supplied or native emoji fonts instead.
     /// </summary>
     public bool? DisableTwemoji { get; set; }
 

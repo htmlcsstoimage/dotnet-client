@@ -85,7 +85,7 @@ public class Template
     public uint? ViewportWidth { get; init; }
 
     /// <summary>
-    /// Twemoji is used to render emoji as a fallback for native emoji fonts. This option will disable that behavior.
+    /// Images rendered from this template use Twemoji by default. Set true to use supplied or native emoji fonts instead.
     /// </summary>
     public bool? DisableTwemoji { get; init; }
 

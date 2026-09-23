@@ -63,7 +63,7 @@ public abstract class CreateImageCommonOptions:ICreateImageRequestBase
     public uint? DedupeDurationS { get; set; }
 
     /// <summary>
-    /// Twemoji is used to render emoji as a fallback for native emoji fonts. This option will disable that behavior.
+    /// HTML/CSS images use Twemoji by default; true disables it. URL images inject Twemoji only when explicitly false. Null or true leaves a URL page's emoji handling unchanged, including its own scripts.
     /// </summary>
     public bool? DisableTwemoji { get; set; }
 
