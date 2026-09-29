@@ -246,7 +246,7 @@ Use [HtmlCssToImage.TagHelpers](https://github.com/htmlcsstoimage/dotnet-client/
 ---
 
 > [!IMPORTANT]
-> Check out the [HTML/CSS To Image Docs](https://docs.htmlcsstoimage.com) for more details on the API's capabilities.
+> Check out the [HTML/CSS To Image Docs](https://docs.htmlcsstoimage.com) for more details on the API's features and operations.
 
 > [!TIP]
 > Get started for free at [htmlcsstoimage.com](https://htmlcsstoimage.com).
