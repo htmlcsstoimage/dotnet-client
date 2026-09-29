@@ -39,7 +39,7 @@ public partial class HtmlCssToImageClient
             if (pathFormat.HasValue)
             {
                 builder.AppendLiteral('/');
-                builder.AppendLiteral(pathFormat.Value.RenderFormatToExtensionWithoutDot());
+                builder.AppendLiteral(pathFormat.Value.ToStringFancy());
             }
 
             CreateAndRenderUrlQueryString(request, ref builder);
@@ -74,7 +74,7 @@ public partial class HtmlCssToImageClient
 
         if (request.ColorScheme != null)
         {
-            builder.EncodeSafeKeyValue("color_scheme", request.ColorScheme.Value.ColorSchemeString());
+            builder.EncodeSafeKeyValue("color_scheme", request.ColorScheme.Value.ToStringFancy());
         }
 
         AppendNumberIfNotNull("device_scale", request.DeviceScale, ref builder);
@@ -103,7 +103,7 @@ public partial class HtmlCssToImageClient
         AppendBoolIfTrue("viewport_touch", request.ViewportTouch, ref builder);
         if (request.MediaType != null)
         {
-            builder.EncodeSafeKeyValue("media_type", request.MediaType.Value.MediaTypeString());
+            builder.EncodeSafeKeyValue("media_type", request.MediaType.Value.ToStringFancy());
         }
 
         if (!string.IsNullOrWhiteSpace(request.ProxyId))

@@ -163,7 +163,7 @@ public partial class HtmlCssToImageClient
             if (pathFormat.HasValue)
             {
                 builder.AppendLiteral('/');
-                builder.AppendLiteral(pathFormat.Value.RenderFormatToExtensionWithoutDot());
+                builder.AppendLiteral(pathFormat.Value.ToStringFancy());
             }
 
             if (templateVersion.HasValue)

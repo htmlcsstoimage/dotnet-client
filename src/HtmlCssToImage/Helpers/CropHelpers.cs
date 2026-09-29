@@ -18,15 +18,8 @@ internal static class CropHelpers
         ReadOnlySpan<char> key,
         ref UrlStringBuilder chars)
     {
-        ReadOnlySpan<char> value = origin switch
-        {
-            RenderImageCropOrigin.Start  => "start",
-            RenderImageCropOrigin.Center => "center",
-            RenderImageCropOrigin.End    => "end",
-            _                            => throw new ArgumentOutOfRangeException(nameof(origin), origin, "Unknown crop origin.")
-        };
-
-        chars.EncodeSafeKeyValue(key, value);
+        origin.Validate(nameof(origin));
+        chars.EncodeSafeKeyValue(key, origin.ToStringFancy());
     }
 
     public static bool TryParsePosition(
@@ -134,15 +127,9 @@ internal static class CropHelpers
             throw new InvalidOperationException("Unable to format a crop measurement.");
         }
 
-        if (unit == RenderImageCropUnit.Percent)
-        {
-            formatted[written++] = '%';
-        }
-        else
-        {
-            formatted[written++] = 'p';
-            formatted[written++] = 'x';
-        }
+        var suffix = unit.ToStringFancy().AsSpan();
+        suffix.CopyTo(formatted[written..]);
+        written += suffix.Length;
 
         chars.EncodeSafeKey(key, formatted[..written]);
     }

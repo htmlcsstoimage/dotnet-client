@@ -1,8 +1,11 @@
+using FancyEnumGenerator.Attributes;
+
 namespace HtmlCssToImage.Models;
 
 /// <summary>
 /// Specifies the available image formats for rendering output.
 /// </summary>
+[FancyEnum(AllowNoUnknown = true, DefaultToStringBehavior = FancyEnumDefaultToStringBehavior.NameOfLower)]
 public enum RenderImageFormat
 {
     /// <summary>

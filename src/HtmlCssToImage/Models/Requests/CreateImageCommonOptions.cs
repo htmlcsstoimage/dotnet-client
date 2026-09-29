@@ -114,6 +114,10 @@ public abstract class CreateImageCommonOptions:ICreateImageRequestBase
     /// </summary>
     public string? StorageDestinationId { get; set; }
 
+    /// <summary>Rules that block matching browser requests during rendering. Available on paid plans.</summary>
+    /// <remarks>Supported by HTML/CSS and URL image creation, including batch requests. Signed create-and-render URLs do not include these rules.</remarks>
+    public RequestOverride[]? RequestOverrides { get; set; }
+
     /// <summary>
     /// Gets or sets the maximum width of the rendered image in jumbo mode. Consumes additional image credits, requires <see cref="JumboMaxHeight"/> to be defined as well.
     /// <see href="https://docs.htmlcsstoimage.com/guides/advanced/jumbo-images/"> Read the Jumbo Images Guide for more information.</see>

@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using HtmlCssToImage.Models.Converters;
+using HtmlCssToImage.Models.Requests;
 
 namespace HtmlCssToImage.Models;
 
@@ -154,6 +155,9 @@ public class Template
     /// Gets or sets the storage destination ID where images created from this template are saved.
     /// </summary>
     public string? StorageDestinationId { get; init; }
+
+    /// <summary>Rules that block matching browser requests when images are rendered from this template.</summary>
+    public RequestOverride[]? RequestOverrides { get; init; }
 
     /// <summary>
     /// Gets or sets the maximum width of the rendered image in jumbo mode.

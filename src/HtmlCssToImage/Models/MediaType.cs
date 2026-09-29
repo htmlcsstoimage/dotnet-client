@@ -1,8 +1,11 @@
+using FancyEnumGenerator.Attributes;
+
 namespace HtmlCssToImage.Models;
 
 /// <summary>
 /// Represents the different types of media for rendering purposes.
 /// </summary>
+[FancyEnum(AllowNoUnknown = true)]
 public enum MediaType
 {
     /// <summary>

@@ -79,7 +79,7 @@ public sealed class PdfValueWithUnitsConverter:JsonConverter<PdfValueWithUnits>
             charsWritten = charsWritten - 1;
         }
 
-        var unit_str = value.Unit.PdfUnitCssValue();
+        var unit_str = value.Unit.ToStringFancy().AsSpan();
         unit_str.CopyTo(span[charsWritten..]);
         charsWritten += unit_str.Length;
         writer.WriteStringValue(span[..charsWritten]);

@@ -112,6 +112,30 @@ using var urlImage = await client.CreateImageAsync(urlRequest);
 
 Custom headers are restricted to the requested URL's origin. Set `IncludeHeadersOnSubrequests` when same-origin resources also require them, and use `AdditionalHeaderOrigins` to allow an exact cross-origin scheme, host, and port. The [custom headers documentation](https://docs.htmlcsstoimage.com/parameters/headers/) covers request security and the create-and-render format. Avoid putting secrets in signed image URLs.
 
+### Blocking Browser Requests
+
+Use `RequestOverrides` on an HTML/CSS, URL, or template creation request to block matching resources while the page renders. Rules require a URL pattern, at least one resource type, or both:
+
+```csharp
+var request = new CreateUrlImageRequest
+{
+    Url = "https://example.com",
+    RequestOverrides =
+    [
+        new RequestOverride
+        {
+            Action = RequestOverrideAction.Block,
+            Url = "*://cdn.example.com/*.js",
+            ResourceTypes = [RequestOverrideResourceType.Script]
+        }
+    ]
+};
+
+using var image = await client.CreateImageAsync(request);
+```
+
+The enum values serialize to API strings such as `"block"`, `"script"`, and `"image_set"`. These rules can also be placed in batch default options. Signed create-and-render URLs do not support `RequestOverrides`. See the [request overrides documentation](https://docs.htmlcsstoimage.com/parameters/request_overrides/) for matching behavior and limits.
+
 ## Deleting Images
 
 Delete one or more existing images from HCTI and clear them from the CDN using their image IDs:

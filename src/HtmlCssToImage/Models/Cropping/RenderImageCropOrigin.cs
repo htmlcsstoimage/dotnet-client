@@ -1,8 +1,11 @@
+using FancyEnumGenerator.Attributes;
+
 namespace HtmlCssToImage.Models;
 
 /// <summary>
 /// Specifies where a size-only crop span is positioned within an axis.
 /// </summary>
+[FancyEnum(AllowNoUnknown = true, DefaultToStringBehavior = FancyEnumDefaultToStringBehavior.NameOfLower)]
 public enum RenderImageCropOrigin
 {
     /// <summary>

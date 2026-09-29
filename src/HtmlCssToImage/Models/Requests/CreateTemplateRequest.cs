@@ -132,6 +132,9 @@ public class CreateTemplateRequest
     /// </summary>
     public string? StorageDestinationId { get; set; }
 
+    /// <summary>Rules that block matching browser requests when images are rendered from this template.</summary>
+    public RequestOverride[]? RequestOverrides { get; set; }
+
     /// <summary>
     /// Gets or sets the maximum width of the rendered image in jumbo mode. Consumes additional image credits, requires <see cref="JumboMaxHeight"/> to be defined as well.
     /// <see href="https://docs.htmlcsstoimage.com/guides/advanced/jumbo-images/"> Read the Jumbo Images Guide for more information.</see>

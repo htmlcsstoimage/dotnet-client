@@ -25,6 +25,7 @@
 
     <ItemGroup>
         <CompilerVisibleProperty Include="Version" />
+        <PackageReference Include="FancyEnumGenerator" Version="0.1.2" PrivateAssets="all" />
     </ItemGroup>
 
     <Target Name="GenerateVersionFile" BeforeTargets="BeforeBuild">

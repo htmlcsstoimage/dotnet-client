@@ -43,7 +43,7 @@ public sealed class RenderImageOptions
         if (includeFormat && Format.HasValue)
         {
             builder.AppendLiteral('.');
-            builder.AppendLiteral(Format.Value.RenderFormatToExtensionWithoutDot());
+            builder.AppendLiteral(Format.Value.ToStringFancy());
         }
 
         if (Dpi.HasValue)

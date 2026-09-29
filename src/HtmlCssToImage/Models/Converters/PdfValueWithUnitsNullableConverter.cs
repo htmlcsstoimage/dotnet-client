@@ -88,7 +88,7 @@ public sealed class PdfValueWithUnitsNullableConverter:JsonConverter<PdfValueWit
             charsWritten = charsWritten - 1;
         }
 
-        var unit_str = value.Value.Unit.PdfUnitCssValue();
+        var unit_str = value.Value.Unit.ToStringFancy().AsSpan();
         unit_str.CopyTo(span[charsWritten..]);
         charsWritten += unit_str.Length;
         writer.WriteStringValue(span[..charsWritten]);
