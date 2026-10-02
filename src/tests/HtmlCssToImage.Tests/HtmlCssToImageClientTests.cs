@@ -727,6 +727,55 @@ public class HtmlCssToImageClientTests
 
 
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task CreateTemplatedImageBatchAsync_PreservesPayloadAndMapsResponse(bool fail)
+    {
+        var defaults = new TemplatedBatchImageOptions { TemplateId = "t-card", TemplateVersion = 3, Format = RenderImageFormat.WEBP, TemplateValues = JsonNode.Parse("{\"brand\":{\"name\":\"Acme\",\"color\":\"red\"}}")!.AsObject() };
+        var variation = new TemplatedBatchImageOptions { TemplateId = "t-other", TemplateValues = JsonNode.Parse("{\"brand\":{\"color\":null},\"tags\":[],\"active\":false}")!.AsObject() };
+        string? body = null;
+        _handlerMock.Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .Returns(async (HttpRequestMessage request, CancellationToken ct) =>
+            {
+                Assert.Equal(HttpMethod.Post, request.Method);
+                Assert.Equal(new Uri("https://hcti.io/v1/image/batch/templated"), request.RequestUri);
+                body = await request.Content!.ReadAsStringAsync(ct);
+                return new HttpResponseMessage(fail ? HttpStatusCode.BadRequest : HttpStatusCode.OK)
+                {
+                    Content = new StringContent(fail ? "{\"error\":\"Bad Request\",\"message\":\"Invalid template\"}" : "{\"images\":[{\"id\":\"two\",\"url\":\"two\"},{\"id\":\"one\",\"url\":\"one\"}]}", Encoding.UTF8, "application/json")
+                };
+            });
+        var client = CreateClient();
+        using var result = await client.CreateTemplatedImageBatchAsync(defaults, [new TemplatedBatchImageOptions(), variation], TestContext.Current.CancellationToken);
+        Assert.Equal(!fail, result.Success);
+        if (fail) { Assert.Equal("Invalid template", result.ErrorDetails!.Message); }
+        else { Assert.Equal(new[] { "two", "one" }, result.Response!.Select(image => image.Id)); }
+        var json = JsonNode.Parse(body!)!;
+        Assert.Equal("t-card", json["default_options"]!["template_id"]!.GetValue<string>());
+        Assert.Equal(3, json["default_options"]!["template_version"]!.GetValue<int>());
+        Assert.Equal("webp", json["default_options"]!["format"]!.GetValue<string>().ToLowerInvariant());
+        Assert.Empty(json["variations"]![0]!.AsObject());
+        var second = json["variations"]![1]!.AsObject();
+        Assert.False(second.ContainsKey("template_version"));
+        Assert.True(second["template_values"]!["brand"]!.AsObject().ContainsKey("color"));
+        Assert.Null(second["template_values"]!["brand"]!["color"]);
+        Assert.Empty(second["template_values"]!["tags"]!.AsArray());
+        Assert.False(second["template_values"]!["active"]!.GetValue<bool>());
+        Assert.Equal("red", defaults.TemplateValues!["brand"]!["color"]!.GetValue<string>());
+        Assert.Null(variation.TemplateVersion);
+    }
+
+    [Fact]
+    public void CreateTemplatedImageBatchRequest_OmitsAbsentDefaults()
+    {
+        var request = new CreateTemplatedImageBatchRequest { Variations = [new() { TemplateId = "t-card" }] };
+        var json = JsonNode.Parse(JsonSerializer.Serialize(request, JsonContext.Default.CreateTemplatedImageBatchRequest))!.AsObject();
+        Assert.False(json.ContainsKey("default_options"));
+        Assert.Equal("t-card", json["variations"]![0]!["template_id"]!.GetValue<string>());
+    }
+
     private static string HexLowerHmac(string key, string value)
     {
         return Convert.ToHexStringLower(

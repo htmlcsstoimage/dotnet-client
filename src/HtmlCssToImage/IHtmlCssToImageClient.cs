@@ -40,6 +40,12 @@ public interface IHtmlCssToImageClient
     /// <returns>An <c>ApiResult&lt;bool?&gt;</c> whose response is <see langword="true"/> when the batch delete request is accepted.</returns>
     public Task<ApiResult<bool?>> DeleteImageBatchAsync(IEnumerable<string> imageIds, CancellationToken cancellationToken = default);
 
+    /// <summary>Creates a batch from one or more saved templates. Results preserve variation order.</summary>
+    public Task<ApiResult<CreateImageResponse[]?>> CreateTemplatedImageBatchAsync(CreateTemplatedImageBatchRequest request, CancellationToken cancellationToken = default);
+
+    /// <summary>Creates a template batch with optional defaults and ordered variations.</summary>
+    public Task<ApiResult<CreateImageResponse[]?>> CreateTemplatedImageBatchAsync(TemplatedBatchImageOptions? defaultOptions, IEnumerable<TemplatedBatchImageOptions> variations, CancellationToken cancellationToken = default);
+
     /// <summary>
     /// Sends a batch request to create multiple images using the specified parameters.
     /// </summary>

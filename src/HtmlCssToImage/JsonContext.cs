@@ -45,6 +45,7 @@ namespace HtmlCssToImage;
 [JsonSerializable(typeof(CreateHtmlCssImageRequest))]
 [JsonSerializable(typeof(CreateUrlImageRequest))]
 [JsonSerializable(typeof(CreateTemplatedImageRequest))]
+[JsonSerializable(typeof(CreateTemplatedImageBatchRequest))]
 [JsonSerializable(typeof(CreateImageBatchRequest<CreateUrlImageRequest>))]
 [JsonSerializable(typeof(CreateImageBatchRequest<CreateHtmlCssImageRequest>))]
 [JsonSerializable(typeof(DeleteImageBatchRequest))]

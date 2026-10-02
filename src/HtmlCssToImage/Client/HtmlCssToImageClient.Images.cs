@@ -89,6 +89,22 @@ public partial class HtmlCssToImageClient
             throw new UnreachableException();
         }
 
+        return await CreateBatchResultAsync(response, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
+    public async Task<ApiResult<CreateImageResponse[]?>> CreateTemplatedImageBatchAsync(CreateTemplatedImageBatchRequest request, CancellationToken cancellationToken = default)
+    {
+        var response = await _client.PostAsJsonAsync($"{BATCH_URL}/templated", request, JsonContext.Default.CreateTemplatedImageBatchRequest, cancellationToken).ConfigureAwait(false);
+        return await CreateBatchResultAsync(response, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <inheritdoc />
+    public Task<ApiResult<CreateImageResponse[]?>> CreateTemplatedImageBatchAsync(TemplatedBatchImageOptions? defaultOptions, IEnumerable<TemplatedBatchImageOptions> variations, CancellationToken cancellationToken = default) =>
+        CreateTemplatedImageBatchAsync(new CreateTemplatedImageBatchRequest { DefaultOptions = defaultOptions, Variations = variations.ToList() }, cancellationToken);
+
+    private static async Task<ApiResult<CreateImageResponse[]?>> CreateBatchResultAsync(HttpResponseMessage response, CancellationToken cancellationToken)
+    {
         var result = new ApiResult<CreateImageResponse[]?>()
         {
             HttpResponseMessage = response,

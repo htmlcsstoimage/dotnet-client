@@ -168,7 +168,7 @@ public static CreateTemplatedImageRequest FromObject<T>(T templateValues, string
 
 ## Creating an Image Batch
 
-Call `CreateImageBatchAsync<T>` on the client to create a batch of images from a collection of either `CreateHtmlCssImageRequest` or `CreateUrlImageRequest` objects. At this time, templates are not supported in batch requests.
+Call `CreateImageBatchAsync<T>` on the client to create a batch of images from a collection of either `CreateHtmlCssImageRequest` or `CreateUrlImageRequest` objects. For templates, use `CreateTemplatedImageBatchAsync` with `TemplatedBatchImageOptions`.
 
 You can construct a `CreateImageBatchRequest` object directly or use the overload on `HtmlCssToImageClient` that accepts `defaultOptions` and `variations` as parameters.
 
@@ -250,3 +250,27 @@ Use [HtmlCssToImage.TagHelpers](https://github.com/htmlcsstoimage/dotnet-client/
 
 > [!TIP]
 > Get started for free at [htmlcsstoimage.com](https://htmlcsstoimage.com).
+
+## Templated image batches
+
+Create images from one or more templates with shared defaults and ordered variations:
+
+```csharp
+using System.Text.Json.Nodes;
+using HtmlCssToImage.Models;
+using HtmlCssToImage.Models.Requests;
+
+using var result = await client.CreateTemplatedImageBatchAsync(new CreateTemplatedImageBatchRequest
+{
+    DefaultOptions = new() { TemplateId = "t-card", TemplateVersion = 3, Format = RenderImageFormat.WEBP },
+    Variations =
+    [
+        new() { TemplateValues = new JsonObject { ["title"] = "First" } },
+        new() { TemplateId = "t-other", TemplateValues = new JsonObject { ["title"] = "Second" } }
+    ]
+});
+```
+
+Omitted fields inherit defaults. Supplying a template ID resets the inherited version; omit its version to use latest. Template value objects merge recursively on the API; arrays, scalars, and explicit null values replace defaults. Results preserve input order and identical images reuse existing assets. Each merged values object must be nonempty and satisfy its template's required variables.
+
+See the [API reference](https://docs.htmlcsstoimage.com/getting-started/using-the-api/#batch-templated-image-creation) for plan limits and examples.
