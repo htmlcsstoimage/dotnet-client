@@ -10,7 +10,7 @@ using HtmlCssToImage.Models.Results;
 namespace HtmlCssToImage;
 
 /// <summary>
-/// Provides methods to create and interact with the HTML/CSS to Image API. Supports operations for asynchronous image creation,
+/// Provides methods to create and interact with the HTML/CSS to Image API. Supports image and recording creation,
 /// batch processing, and generating URLs for templated images with rendering format options.
 /// </summary>
 public interface IHtmlCssToImageClient
@@ -24,6 +24,31 @@ public interface IHtmlCssToImageClient
     /// <returns>An <see cref="ApiResult{T}"/> object containing the response with metadata such as the image's URL and ID, as well as the status of the operation.</returns>
     public Task<ApiResult<CreateImageResponse?>> CreateImageAsync<T>(T request, CancellationToken cancellationToken = default) where T : ICreateImageRequestBase;
 
+    /// <summary>Creates an HTML/CSS or URL recording and returns its ID, status URL, and media URL.</summary>
+    /// <typeparam name="T">A request type implementing <see cref="ICreateRecordingRequestBase"/>.</typeparam>
+    /// <param name="request">The source content, browser settings, timeline, and output options.</param>
+    /// <param name="cancellationToken">A cancellation token for the API request.</param>
+    /// <returns>The created or deduplicated recording, or API error details. The recording URL can be embedded or requested immediately; a request made before the recording is finished waits and then returns it.</returns>
+    public Task<ApiResult<CreateRecordingResponse?>> CreateRecordingAsync<T>(T request, CancellationToken cancellationToken = default) where T : ICreateRecordingRequestBase;
+
+    /// <summary>Fetches a recording's current lifecycle status, attempts, and most recent error.</summary>
+    /// <param name="recordingId">The recording ID.</param>
+    /// <param name="cancellationToken">A cancellation token for the API request.</param>
+    /// <returns>Status information for both HTTP 200 and 202 responses, or API error details.</returns>
+    public Task<ApiResult<RecordingStatusResponse?>> FetchRecordingStatusAsync(string recordingId, CancellationToken cancellationToken = default);
+
+    /// <summary>Deletes a recording and clears its media from the CDN.</summary>
+    /// <param name="recordingId">The ID of the recording to delete.</param>
+    /// <param name="cancellationToken">A cancellation token for the API request.</param>
+    /// <returns>A response of true when deletion is accepted, or API error details.</returns>
+    public Task<ApiResult<bool?>> DeleteRecordingAsync(string recordingId, CancellationToken cancellationToken = default);
+
+    /// <summary>Deletes multiple recordings in one API call and clears their media from the CDN.</summary>
+    /// <param name="recordingIds">The IDs of the recordings to delete. When empty, no request is sent.</param>
+    /// <param name="cancellationToken">A cancellation token for the API request.</param>
+    /// <returns>A response of true when batch deletion is accepted, or API error details. A successful result with a response of true, and no <see cref="ApiResult{T}.HttpResponseMessage"/>, when <paramref name="recordingIds"/> is empty.</returns>
+    public Task<ApiResult<bool?>> DeleteRecordingBatchAsync(IEnumerable<string> recordingIds, CancellationToken cancellationToken = default);
+
     /// <summary>
     /// Deletes an existing image and clears it from the CDN.
     /// </summary>
@@ -35,9 +60,9 @@ public interface IHtmlCssToImageClient
     /// <summary>
     /// Deletes multiple existing images in one API call and clears them from the CDN.
     /// </summary>
-    /// <param name="imageIds">The IDs of the images to delete.</param>
+    /// <param name="imageIds">The IDs of the images to delete. When empty, no request is sent.</param>
     /// <param name="cancellationToken">A cancellation token that can be used to cancel the operation.</param>
-    /// <returns>An <c>ApiResult&lt;bool?&gt;</c> whose response is <see langword="true"/> when the batch delete request is accepted.</returns>
+    /// <returns>An <c>ApiResult&lt;bool?&gt;</c> whose response is <see langword="true"/> when the batch delete request is accepted. A successful result with a response of <see langword="true"/>, and no <see cref="ApiResult{T}.HttpResponseMessage"/>, when <paramref name="imageIds"/> is empty.</returns>
     public Task<ApiResult<bool?>> DeleteImageBatchAsync(IEnumerable<string> imageIds, CancellationToken cancellationToken = default);
 
     /// <summary>Creates a batch from one or more saved templates. Results preserve variation order.</summary>

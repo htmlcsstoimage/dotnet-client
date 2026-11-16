@@ -1,7 +1,7 @@
 # [HTML/CSS to Image](https://htmlcsstoimage.com/) 
 ## .Net / C# Packages
 
-This repo contains a .NET client for the HTML/CSS to Image API, allowing you to generate images from HTML/CSS content directly from your .NET applications, as well as helper packages for integrating with ASP.NET Core and Blazor.
+This repo contains a .NET client for the HTML/CSS to Image API, allowing you to generate images and video recordings (MP4, WebM, or GIF) from HTML/CSS content or URLs directly from your .NET applications, as well as helper packages for integrating with ASP.NET Core and Blazor.
 
 ## Quick Start
 
@@ -63,7 +63,7 @@ Check out the package READMEs for more details on integrating:
 
 | Package                                | Description                                                       | Readme                                                                                                                                                                       | Nuget                                                                                                                                                    |                          
 |----------------------------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **HtmlCssToImage**                     | Core library for working with the API                             | [![README](https://img.shields.io/badge/readme-purple)](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage/README.md)                    | [![NuGet Version](https://img.shields.io/nuget/v/htmlcsstoimage)](https://www.nuget.org/packages/HtmlCssToImage)                                         |
+| **HtmlCssToImage**                     | Core library for working with the API: images, recordings, and templates | [![README](https://img.shields.io/badge/readme-purple)](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage/README.md)                    | [![NuGet Version](https://img.shields.io/nuget/v/htmlcsstoimage)](https://www.nuget.org/packages/HtmlCssToImage)                                         |
 | **HtmlCssToImage.DependencyInjection** | Dependency injection helpers for ASP.NET Core                     | [![README](https://img.shields.io/badge/readme-purple)](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage.DependencyInjection/README.md) | [![NuGet Version](https://img.shields.io/nuget/v/htmlcsstoimage.dependencyinjection)](https://www.nuget.org/packages/HtmlCssToImage.DependencyInjection) |
 | **HtmlCssToImage.Blazor**              | Blazor component for generating Open Graph image meta tags        | [![README](https://img.shields.io/badge/readme-purple)](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage.Blazor/README.md)             | [![NuGet Version](https://img.shields.io/nuget/v/htmlcsstoimage.blazor)](https://www.nuget.org/packages/HtmlCssToImage.Blazor)                           |
 | **HtmlCssToImage.TagHelpers**          | ASP.NET Core TagHelpers for generating Open Graph image meta tags | [![README](https://img.shields.io/badge/readme-purple)](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage.TagHelpers/README.md)          | [![NuGet Version](https://img.shields.io/nuget/v/htmlcsstoimage.taghelpers)](https://www.nuget.org/packages/HtmlCssToImage.TagHelpers)                   |
@@ -75,6 +75,65 @@ Check out the package READMEs for more details on integrating:
 
 > [!TIP]
 > Get started for free at [htmlcsstoimage.com](https://htmlcsstoimage.com).
+
+## Recordings
+
+Record animated HTML/CSS or a webpage as an MP4, WebM, or GIF with `CreateRecordingAsync`. Pass a `CreateHtmlCssRecordingRequest` for HTML/CSS content:
+
+```csharp
+using HtmlCssToImage.Models.Recordings;
+using HtmlCssToImage.Models.Requests;
+
+using var html_recording = await client.CreateRecordingAsync(new CreateHtmlCssRecordingRequest
+{
+    Html = "<h1 class='pulse'>Hello World</h1>",
+    Css = "@keyframes pulse { 50% { opacity: 0.3; } } .pulse { animation: pulse 1s infinite; }",
+    DurationMs = 3000,
+    Output = new() { Format = RecordingFormat.Gif }
+});
+
+if(html_recording.Success)
+{
+    Console.WriteLine(html_recording.Response.RecordingUrl);
+}else{
+    Console.WriteLine(html_recording.ErrorDetails.Message);
+}
+```
+
+Or a `CreateUrlRecordingRequest` to record a webpage, with optional timeline actions like scrolling:
+
+```csharp
+using var url_recording = await client.CreateRecordingAsync(new CreateUrlRecordingRequest
+{
+    Url = "https://example.com",
+    ViewportWidth = 1280,
+    ViewportHeight = 720,
+    DurationMs = 10000,
+    Actions = [new RecordingSimpleScrollAction()],
+    Output = new() { Format = RecordingFormat.Mp4 }
+});
+```
+
+Use the `RecordingUrl` like an image URL: embed it in a `<video>` tag, link to it, or download it. If the recording isn't finished when the URL is requested, the request waits and then returns it, so you can use the URL right away.
+
+Checking status is optional, for workflows that track progress or failures:
+
+```csharp
+using var status = await client.FetchRecordingStatusAsync(url_recording.Response!.Id);
+if(status.Success)
+{
+    Console.WriteLine(status.Response.Status); // Processing, Ready, Failed, ...
+}
+```
+
+Delete recordings individually or in a batch:
+
+```csharp
+using var deleted = await client.DeleteRecordingAsync("recording-id");
+using var batch_deleted = await client.DeleteRecordingBatchAsync(["first-id", "second-id"]);
+```
+
+See the [recordings guide](https://docs.htmlcsstoimage.com/getting-started/recordings/) and the [package README](https://github.com/htmlcsstoimage/dotnet-client/blob/main/src/HtmlCssToImage/README.md#creating-recordings) for triggers, actions, and output options.
 
 ## Templated image batches
 

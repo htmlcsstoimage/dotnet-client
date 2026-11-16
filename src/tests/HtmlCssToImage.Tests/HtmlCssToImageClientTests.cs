@@ -558,11 +558,11 @@ public class HtmlCssToImageClientTests
             });
 
         var client = CreateClient();
-        using var result = await client.DeleteImageAsync("image/id", TestContext.Current.CancellationToken);
+        using var result = await client.DeleteImageAsync("image_1", TestContext.Current.CancellationToken);
 
         Assert.NotNull(capturedRequest);
         Assert.Equal(HttpMethod.Delete, capturedRequest.Method);
-        Assert.Equal(new Uri("https://hcti.io/v1/image/image%2Fid"), capturedRequest.RequestUri);
+        Assert.Equal(new Uri("https://hcti.io/v1/image/image_1"), capturedRequest.RequestUri);
         Assert.True(result.Success);
         Assert.Equal(202, result.StatusCode);
         Assert.True(result.Response);
@@ -624,6 +624,92 @@ public class HtmlCssToImageClientTests
         Assert.True(result.Success);
         Assert.Equal(202, result.StatusCode);
         Assert.True(result.Response);
+    }
+
+    [Fact]
+    public async Task DeleteImageBatchAsync_WithNoIds_SucceedsWithoutSendingRequest()
+    {
+        var client = CreateClient();
+        using var result = await client.DeleteImageBatchAsync([], TestContext.Current.CancellationToken);
+
+        Assert.True(result.Success);
+        Assert.True(result.Response);
+        Assert.Null(result.HttpResponseMessage);
+        _handlerMock.Protected().Verify("SendAsync", Times.Never(), ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>());
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task ApiResult_Dispose_DisposesRequestMessage(bool handlerSetsRequestMessage)
+    {
+        HttpRequestMessage? capturedRequest = null;
+        _handlerMock.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .Callback<HttpRequestMessage, CancellationToken>((request, _) => capturedRequest = request)
+            .ReturnsAsync((HttpRequestMessage request, CancellationToken _) => new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.Accepted,
+                RequestMessage = handlerSetsRequestMessage ? request : null
+            });
+
+        var client = CreateClient();
+        using var result = await client.DeleteImageBatchAsync(["image-1"], TestContext.Current.CancellationToken);
+        Assert.Same(capturedRequest, result.HttpResponseMessage!.RequestMessage);
+        var requestContent = capturedRequest!.Content!;
+
+        var body = await requestContent.ReadFromJsonAsync(JsonContext.Default.DeleteImageBatchRequest, TestContext.Current.CancellationToken);
+        Assert.Equal(["image-1"], body!.Ids);
+
+        result.Dispose();
+
+        await Assert.ThrowsAsync<ObjectDisposedException>(() => requestContent.ReadAsStringAsync(TestContext.Current.CancellationToken));
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task DeleteImageBatchAsync_InvalidErrorBody_DisposesRequestMessage(bool handlerSetsRequestMessage)
+    {
+        HttpRequestMessage? capturedRequest = null;
+        _handlerMock.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .Callback<HttpRequestMessage, CancellationToken>((request, _) => capturedRequest = request)
+            .ReturnsAsync((HttpRequestMessage request, CancellationToken _) => new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.BadRequest,
+                RequestMessage = handlerSetsRequestMessage ? request : null,
+                Content = new StringContent("not json")
+            });
+
+        var client = CreateClient();
+        await Assert.ThrowsAnyAsync<JsonException>(() => client.DeleteImageBatchAsync(["image-1"], TestContext.Current.CancellationToken));
+
+        await Assert.ThrowsAsync<ObjectDisposedException>(() => capturedRequest!.Content!.ReadAsStringAsync(TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task DeleteImageBatchAsync_SendFailure_DisposesRequestMessage()
+    {
+        HttpRequestMessage? capturedRequest = null;
+        _handlerMock.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .Callback<HttpRequestMessage, CancellationToken>((request, _) => capturedRequest = request)
+            .ThrowsAsync(new HttpRequestException("network down"));
+
+        var client = CreateClient();
+        await Assert.ThrowsAsync<HttpRequestException>(() => client.DeleteImageBatchAsync(["image-1"], TestContext.Current.CancellationToken));
+
+        await Assert.ThrowsAsync<ObjectDisposedException>(() => capturedRequest!.Content!.ReadAsStringAsync(TestContext.Current.CancellationToken));
     }
 
     [Fact]

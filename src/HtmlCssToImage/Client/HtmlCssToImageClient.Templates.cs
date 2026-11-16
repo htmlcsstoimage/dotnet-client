@@ -24,25 +24,8 @@ public partial class HtmlCssToImageClient
 
         var response =await _client.PostAsJsonAsync(url, request, JsonContext.Default.CreateTemplateRequest, cancellationToken).ConfigureAwait(false);
 
-        var result = new ApiResult<CreateTemplateResponse?>()
-        {
-            HttpResponseMessage = response,
-            StatusCode = (int)response.StatusCode,
-            Success = response.IsSuccessStatusCode
-        };
-        if (response.IsSuccessStatusCode)
-        {
-            var response_data =
-                await response.Content.ReadFromJsonAsync<CreateTemplateResponse>(
-                    JsonContext.Default.CreateTemplateResponse, cancellationToken).ConfigureAwait(false);
-            result.Response = response_data;
-        }
-        else
-        {
-            result.ErrorDetails = await response.Content.ReadFromJsonAsync<ErrorDetails>(JsonContext.Default.ErrorDetails, cancellationToken).ConfigureAwait(false);
-        }
-
-        return result;
+        return await response.ParseHttpResponseAsync(
+            JsonContext.Default.CreateTemplateResponse, cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
@@ -66,22 +49,8 @@ public partial class HtmlCssToImageClient
         //var url = $"{TEMPLATE_BASE_URL}{(string.IsNullOrEmpty(templateId)?"":$"/{templateId}")}?count={count}&max_version={nextPageStart ?? long.MaxValue}";
 
         var response = await _client.GetAsync(url, cancellationToken);
-        var result = new ApiResult<PaginatedResponse<Template>?>()
-        {
-            HttpResponseMessage = response,
-            StatusCode = (int)response.StatusCode,
-            Success = response.IsSuccessStatusCode
-        };
-        if (response.IsSuccessStatusCode)
-        {
-            result.Response = await response.Content.ReadFromJsonAsync<PaginatedResponse<Template>>(JsonContext.Default.PaginatedResponseTemplate, cancellationToken).ConfigureAwait(false);
-        }
-        else
-        {
-            result.ErrorDetails = await response.Content.ReadFromJsonAsync<ErrorDetails>(JsonContext.Default.ErrorDetails, cancellationToken).ConfigureAwait(false);
-        }
-
-        return result;
+        return await response.ParseHttpResponseAsync(
+            JsonContext.Default.PaginatedResponseTemplate, cancellationToken).ConfigureAwait(false);
 
     }
 

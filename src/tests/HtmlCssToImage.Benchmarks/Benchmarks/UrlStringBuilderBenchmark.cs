@@ -83,7 +83,7 @@ public class UrlStringBuilderBenchmark
             builder.WriteSafeKey("device_scale",_request.DeviceScale!.Value);
             builder.WriteSafeKey("ms_delay",_request.MsDelay!.Value);
             builder.EncodeSafeKeyValue("full_screen","true");
-            builder.EncodeSafeKeyValue("color_scheme",_request.ColorScheme!.Value.ColorSchemeString());
+            builder.EncodeSafeKeyValue("color_scheme",_request.ColorScheme!.Value.ToStringFancy());
             builder.EncodeSafeKey("timezone",_request.Timezone);
 
             var result = builder.QueryString(false);
