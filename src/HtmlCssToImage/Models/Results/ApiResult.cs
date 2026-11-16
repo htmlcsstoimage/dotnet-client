@@ -8,7 +8,8 @@ namespace HtmlCssToImage.Models.Results;
 /// </summary>
 /// <typeparam name="T">The type of the response data returned by the API if the operation is successful.</typeparam>
 /// <remarks>
-/// Dispose the result after reading it to release its owned <see cref="System.Net.Http.HttpResponseMessage"/>.
+/// Dispose the result after reading it to release its owned <see cref="System.Net.Http.HttpResponseMessage"/> and the
+/// originating <see cref="System.Net.Http.HttpResponseMessage.RequestMessage"/>.
 /// </remarks>
 public sealed class ApiResult<T> : IDisposable
 {
@@ -39,13 +40,13 @@ public sealed class ApiResult<T> : IDisposable
     /// <summary>
     /// The raw HTTP response message returned by the API. Use this for advanced scenarios that
     /// need response headers, the originating <see cref="System.Net.Http.HttpResponseMessage.RequestMessage"/>,
-    /// the HTTP version, reason phrase, or other transport-level details. This message is disposed
-    /// when the <see cref="ApiResult{T}"/> is disposed.
+    /// the HTTP version, reason phrase, or other transport-level details. This message and its
+    /// <see cref="System.Net.Http.HttpResponseMessage.RequestMessage"/> are disposed when the <see cref="ApiResult{T}"/> is disposed.
     /// </summary>
     public HttpResponseMessage? HttpResponseMessage { get; internal set; } = null!;
 
     /// <summary>
-    /// Releases the owned HTTP response message.
+    /// Releases the owned HTTP request message (<see cref="System.Net.Http.HttpResponseMessage.RequestMessage"/>) and HTTP response message.
     /// </summary>
     public void Dispose()
     {
@@ -54,6 +55,7 @@ public sealed class ApiResult<T> : IDisposable
             return;
         }
 
+        HttpResponseMessage?.RequestMessage?.Dispose();
         HttpResponseMessage?.Dispose();
         _disposed = true;
     }

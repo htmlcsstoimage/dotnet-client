@@ -18,7 +18,7 @@ public partial class HtmlCssToImageClient : IHtmlCssToImageClient
     private readonly string _apiHost;
 
     /// <summary>
-    /// A client for interacting with the HtmlCssToImage service, providing functionality for creating images using HTML and CSS input, managing templates, and generating rendered image URLs.
+    /// A client for interacting with the HtmlCssToImage service, providing functionality for creating images and recordings, managing templates, and generating rendered image URLs.
     /// </summary>
     public HtmlCssToImageClient(HttpClient client, HtmlCssToImageOptions options): this(client, options, Environment.GetEnvironmentVariable("HCTI_API_BASE_URL") ?? DEFAULT_HOST)
     {
@@ -40,6 +40,7 @@ public partial class HtmlCssToImageClient : IHtmlCssToImageClient
     private const string CREATE_AND_RENDER_PATH = $"{CREATE_OR_GET_PATH}/create-and-render";
     private const string CREATE_URL = $"{CREATE_OR_GET_PATH}?includeId=true";
     private const string BATCH_URL = $"{CREATE_OR_GET_PATH}/batch";
+    private const string BATCH_TEMPLATED_URL = $"{BATCH_URL}/templated";
 
     private const string TEMPLATE_VERSION_QUERY_PARAM = "template_version";
 }

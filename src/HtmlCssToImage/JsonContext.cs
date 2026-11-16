@@ -18,7 +18,7 @@ namespace HtmlCssToImage;
 /// - Snake case naming policy.
 /// - Respect for nullable annotations.
 /// - Ignoring null properties during serialization.
-/// This context predefines serializable types related to image generation,
+/// This context predefines serializable types related to image and recording generation,
 /// including requests, responses, and other associated models.
 /// </summary>
 /// <remarks>
@@ -26,6 +26,7 @@ namespace HtmlCssToImage;
 /// - <see cref="PdfValueWithUnitsNullableConverter"/>
 /// - <see cref="PdfValueWithUnitsConverter"/>
 /// - <see cref="PdfMarginsConverter"/>
+/// - <see cref="RecordingStatusJsonConverter"/>
 /// Predefined serializable types include:
 /// - <see cref="CreateHtmlCssImageRequest"/>
 /// - <see cref="CreateUrlImageRequest"/>
@@ -41,7 +42,12 @@ namespace HtmlCssToImage;
 /// - <see cref="PaginatedResponse{T}"/>
 /// </remarks>
 [JsonSourceGenerationOptions(UseStringEnumConverter = true, NumberHandling = JsonNumberHandling.AllowReadingFromString, AllowTrailingCommas = true, PropertyNamingPolicy = JsonKnownNamingPolicy.SnakeCaseLower, RespectNullableAnnotations = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    Converters = [typeof(PdfValueWithUnitsNullableConverter), typeof(PdfValueWithUnitsConverter), typeof(PdfMarginsConverter)])]
+    Converters = [typeof(PdfValueWithUnitsNullableConverter), typeof(PdfValueWithUnitsConverter), typeof(PdfMarginsConverter), typeof(RecordingStatusJsonConverter)])]
+[JsonSerializable(typeof(CreateHtmlCssRecordingRequest))]
+[JsonSerializable(typeof(CreateUrlRecordingRequest))]
+[JsonSerializable(typeof(DeleteRecordingBatchRequest))]
+[JsonSerializable(typeof(CreateRecordingResponse))]
+[JsonSerializable(typeof(RecordingStatusResponse))]
 [JsonSerializable(typeof(CreateHtmlCssImageRequest))]
 [JsonSerializable(typeof(CreateUrlImageRequest))]
 [JsonSerializable(typeof(CreateTemplatedImageRequest))]

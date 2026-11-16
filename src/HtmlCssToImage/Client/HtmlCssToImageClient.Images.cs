@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Net.Http.Json;
+using HtmlCssToImage.Helpers;
 using HtmlCssToImage.Models.Requests;
 using HtmlCssToImage.Models.Responses;
 using HtmlCssToImage.Models.Results;
@@ -12,10 +13,10 @@ public partial class HtmlCssToImageClient
     public async Task<ApiResult<bool?>> DeleteImageAsync(string imageId, CancellationToken cancellationToken = default)
     {
         var response = await _client.DeleteAsync(
-            $"{CREATE_OR_GET_PATH}/{Uri.EscapeDataString(imageId)}",
+            $"{CREATE_OR_GET_PATH}/{imageId}",
             cancellationToken).ConfigureAwait(false);
 
-        return await CreateDeleteImageResultAsync(response, cancellationToken).ConfigureAwait(false);
+        return await response.CreateDeleteResultAsync(cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
@@ -26,38 +27,22 @@ public partial class HtmlCssToImageClient
         {
             Ids = imageIds.ToArray()
         };
+        if (request.Ids.Length == 0)
+        {
+            return CreateEmptyBatchDeleteResult();
+        }
+
         var request_message = new HttpRequestMessage(HttpMethod.Delete, BATCH_URL)
         {
             Content = JsonContent.Create(request, JsonContext.Default.DeleteImageBatchRequest)
         };
-        var response = await _client.SendAsync(request_message, cancellationToken).ConfigureAwait(false);
+        var response = await _client.SendOwnedAsync(request_message, cancellationToken).ConfigureAwait(false);
 
-        return await CreateDeleteImageResultAsync(response, cancellationToken).ConfigureAwait(false);
+        return await response.CreateDeleteResultAsync(cancellationToken).ConfigureAwait(false);
     }
 
-    private static async Task<ApiResult<bool?>> CreateDeleteImageResultAsync(HttpResponseMessage response,
-        CancellationToken cancellationToken)
-    {
-        var result = new ApiResult<bool?>
-        {
-            HttpResponseMessage = response,
-            StatusCode = (int)response.StatusCode,
-            Success = response.IsSuccessStatusCode
-        };
-
-        if (response.IsSuccessStatusCode)
-        {
-            result.Response = true;
-        }
-        else
-        {
-            result.ErrorDetails = await response.Content.ReadFromJsonAsync<ErrorDetails>(
-                JsonContext.Default.ErrorDetails,
-                cancellationToken).ConfigureAwait(false);
-        }
-
-        return result;
-    }
+    /// <summary>A successful batch delete result for an empty ID list, returned without sending a request.</summary>
+    private static ApiResult<bool?> CreateEmptyBatchDeleteResult() => new() { Success = true, Response = true, StatusCode = 200, HttpResponseMessage = null };
 
     /// <inheritdoc />
     public async Task<ApiResult<CreateImageResponse[]?>> CreateImageBatchAsync<T>(T? defaultOptions, IEnumerable<T> variations,
@@ -95,7 +80,7 @@ public partial class HtmlCssToImageClient
     /// <inheritdoc />
     public async Task<ApiResult<CreateImageResponse[]?>> CreateTemplatedImageBatchAsync(CreateTemplatedImageBatchRequest request, CancellationToken cancellationToken = default)
     {
-        var response = await _client.PostAsJsonAsync($"{BATCH_URL}/templated", request, JsonContext.Default.CreateTemplatedImageBatchRequest, cancellationToken).ConfigureAwait(false);
+        var response = await _client.PostAsJsonAsync(BATCH_TEMPLATED_URL, request, JsonContext.Default.CreateTemplatedImageBatchRequest, cancellationToken).ConfigureAwait(false);
         return await CreateBatchResultAsync(response, cancellationToken).ConfigureAwait(false);
     }
 
@@ -111,16 +96,25 @@ public partial class HtmlCssToImageClient
             StatusCode = (int)response.StatusCode,
             Success = response.IsSuccessStatusCode
         };
-        if (response.IsSuccessStatusCode)
+        try
         {
-            var response_data =
-                await response.Content.ReadFromJsonAsync<CreateImageBatchResponse>(
-                    JsonContext.Default.CreateImageBatchResponse, cancellationToken);
-            result.Response = response_data?.Images ?? [];
+            if (response.IsSuccessStatusCode)
+            {
+                var response_data =
+                    await response.Content.ReadFromJsonAsync<CreateImageBatchResponse>(
+                        JsonContext.Default.CreateImageBatchResponse, cancellationToken);
+                result.Response = response_data?.Images ?? [];
+            }
+            else
+            {
+                result.ErrorDetails = await response.Content.ReadFromJsonAsync<ErrorDetails>(JsonContext.Default.ErrorDetails, cancellationToken);
+            }
         }
-        else
+        catch
         {
-            result.ErrorDetails = await response.Content.ReadFromJsonAsync<ErrorDetails>(JsonContext.Default.ErrorDetails, cancellationToken);
+            // The caller never receives the result, so release the response and its request here.
+            result.Dispose();
+            throw;
         }
 
         return result;
@@ -150,21 +144,7 @@ public partial class HtmlCssToImageClient
             throw new UnreachableException();
         }
 
-        var result = new ApiResult<CreateImageResponse?>()
-        {
-            HttpResponseMessage = response,
-            StatusCode = (int)response.StatusCode,
-            Success = response.IsSuccessStatusCode
-        };
-        if (response.IsSuccessStatusCode)
-        {
-            result.Response = await response.Content.ReadFromJsonAsync<CreateImageResponse>(JsonContext.Default.CreateImageResponse, cancellationToken).ConfigureAwait(false);
-        }
-        else
-        {
-            result.ErrorDetails = await response.Content.ReadFromJsonAsync<ErrorDetails>(JsonContext.Default.ErrorDetails, cancellationToken).ConfigureAwait(false);
-        }
-
-        return result;
+        return await response.ParseHttpResponseAsync(
+            JsonContext.Default.CreateImageResponse, cancellationToken).ConfigureAwait(false);
     }
 }

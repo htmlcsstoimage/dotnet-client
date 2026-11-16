@@ -4,7 +4,7 @@
 ![HCTI Logo](https://raw.githubusercontent.com/HtmlCssToImage/dotnet-client/main/logo-180x180.png)
 
 
-This package provides a .NET client for the HTML/CSS to Image API, allowing you to generate images from HTML/CSS content directly from your .NET applications.
+This package provides a .NET client for the HTML/CSS to Image API, allowing you to generate images and video recordings from HTML/CSS content or URLs directly from your .NET applications.
 
 [![NuGet Version](https://img.shields.io/nuget/v/htmlcsstoimage)](https://www.nuget.org/packages/HtmlCssToImage)
 
@@ -59,7 +59,56 @@ An `ApiResult<T>` provides:
 
 The raw `HttpResponseMessage` is included so you can inspect response headers, the originating `RequestMessage`, the HTTP version, reason phrase, and other transport-level details that are not part of the typed response.
 
-`ApiResult<T>` owns that raw response and implements `IDisposable`. Use `using` or `using var` for every result so the underlying response and content are released promptly.
+`ApiResult<T>` owns that raw response, along with its originating `RequestMessage`, and implements `IDisposable`. Use `using` or `using var` for every result so the underlying request, response, and content are released promptly.
+
+## Creating Recordings
+
+Use `CreateRecordingAsync` with `CreateHtmlCssRecordingRequest` or `CreateUrlRecordingRequest` to record HTML/CSS or a public webpage as MP4, WebM, or GIF:
+
+```csharp
+using HtmlCssToImage.Models.Recordings;
+using HtmlCssToImage.Models.Requests;
+
+using var recording = await client.CreateRecordingAsync(new CreateUrlRecordingRequest
+{
+    Url = "https://example.com",
+    ViewportWidth = 1280,
+    ViewportHeight = 720,
+    DurationMs = 10000,
+    Actions = [new RecordingSimpleScrollAction()],
+    Output = new() { Format = RecordingFormat.Mp4 }
+});
+
+if (recording.Success)
+{
+    // Embed or request this URL directly; it returns the recording once it's ready.
+    Console.WriteLine(recording.Response.RecordingUrl);
+
+    // Optional: check the current status in a workflow.
+    using var status = await client.FetchRecordingStatusAsync(recording.Response.Id);
+    if (status.Success)
+    {
+        Console.WriteLine(status.Response.Status);
+    }
+}
+```
+
+For animated HTML, use `new CreateHtmlCssRecordingRequest { Html = "<h1>Hello</h1>", Css = "...", DurationMs = 3000 }` with the same method. Both request types share browser settings, triggers, timeline actions, and output options. Optional settings use the API defaults. Recordings do not include audio.
+
+Creation returns an ID, a status URL, and a `RecordingUrl`. Use the `RecordingUrl` like an image URL: embed it in a `<video>` tag, link to it, or download it. If the recording isn't finished when the URL is requested, the request waits and then returns it, so you don't need to check status first.
+
+Checking status is optional, for workflows that track progress or failures. `FetchRecordingStatusAsync` fetches the current state once; HTTP 200 and 202 both return status information. `Ready`, `Failed`, and `Cancelled` are terminal states. A nonterminal state can include an error from a previous attempt. A status this client version doesn't recognize is returned as `RecordingStatus.Unknown`.
+
+Delete recordings individually or in a batch:
+
+```csharp
+using var deleted = await client.DeleteRecordingAsync("recording-id");
+using var batchDeleted = await client.DeleteRecordingBatchAsync(["first-id", "second-id"]);
+```
+
+Both delete methods return `ApiResult<bool?>` with a response of `true` when the API accepts deletion. `DeleteRecordingBatchAsync` (like `DeleteImageBatchAsync`) returns a successful result without sending a request when given no IDs. All recording methods accept a `CancellationToken`.
+
+See the [recording guide](https://docs.htmlcsstoimage.com/getting-started/recordings/), [actions reference](https://docs.htmlcsstoimage.com/parameters/actions/), and [trigger reference](https://docs.htmlcsstoimage.com/parameters/trigger/) for examples and available options.
 
 ## Creating Images
 You can generate images using your HCTI client with strongly typed parameters:
