@@ -19,12 +19,12 @@ public sealed class RecordingSimpleScrollAction : RecordingAction
     public int? MsBetweenScrolls { get; set; }
 
     /// <summary>
-    /// Distance per scroll, as a number of CSS pixels or a string such as <c>900px</c> or <c>90vh</c>. Assign a number or string directly. Defaults to <c>90vh</c>.
+    /// Distance per scroll, as a number of CSS pixels or a string such as <c>900px</c> or <c>50vh</c>. Assign a number or string directly. Leave null to use API defaults.
     /// </summary>
     public JsonNode? ScrollDistance { get; set; }
 
     /// <summary>
-    /// Easing curve for each movement. Defaults to <see cref="ScrollEasing.EaseInOutExpo"/>.
+    /// Easing curve for each movement. Leave null to use API defaults.
     /// </summary>
     public ScrollEasing? Easing { get; set; }
 
