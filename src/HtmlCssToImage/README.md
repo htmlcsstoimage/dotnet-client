@@ -93,7 +93,9 @@ if (recording.Success)
 }
 ```
 
-For animated HTML, use `new CreateHtmlCssRecordingRequest { Html = "<h1>Hello</h1>", Css = "...", DurationMs = 3000 }` with the same method. Both request types share browser settings, triggers, timeline actions, and output options. Optional settings use the API defaults. Recordings do not include audio.
+For animated HTML, use `new CreateHtmlCssRecordingRequest { Html = "<h1>Hello</h1>", Css = "...", DurationMs = 3000 }` with the same method. Both request types share browser settings, triggers, timeline actions, and output options. Optional settings use the API defaults.
+
+For an MP4 or WebM soundtrack, set `Audio` to `new RecordingAssetAudio { AssetId = "YOUR_ASSET_ID", DelayMs = 500 }` or `new RecordingUrlAudio { Url = "https://cdn.example.com/audio/intro.mp3" }` on either recording request. [Audio sources and playback options](https://docs.htmlcsstoimage.com/parameters/audio/).
 
 Creation returns an ID, a status URL, and a `RecordingUrl`. Use the `RecordingUrl` like an image URL: embed it in a `<video>` tag, link to it, or download it. If the recording isn't finished when the URL is requested, the request waits and then returns it, so you don't need to check status first.
 

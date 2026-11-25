@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace HtmlCssToImage.Models.Recordings;
 
-/// <summary>Output media format. Recordings do not include audio.</summary>
+/// <summary>Output media format. MP4 and WebM support an optional soundtrack.</summary>
 [FancyEnum(AllowNoUnknown = true, DefaultToStringBehavior = FancyEnumDefaultToStringBehavior.JsonStringEnumMemberNameAttribute)]
 public enum RecordingFormat
 {

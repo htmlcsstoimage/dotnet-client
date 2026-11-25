@@ -114,6 +114,8 @@ using var url_recording = await client.CreateRecordingAsync(new CreateUrlRecordi
 });
 ```
 
+For an MP4 or WebM soundtrack, set `Audio` to `new RecordingAssetAudio { AssetId = "YOUR_ASSET_ID", DelayMs = 500 }` or `new RecordingUrlAudio { Url = "https://cdn.example.com/audio/intro.mp3" }` on either recording request. [Audio sources and playback options](https://docs.htmlcsstoimage.com/parameters/audio/).
+
 Use the `RecordingUrl` like an image URL: embed it in a `<video>` tag, link to it, or download it. If the recording isn't finished when the URL is requested, the request waits and then returns it, so you can use the URL right away.
 
 Checking status is optional, for workflows that track progress or failures:

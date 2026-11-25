@@ -52,12 +52,16 @@ public class HtmlCssToImageClientRecordingsTests
                 Assert.False(json["identify_as_hcti"]!.GetValue<bool>());
                 Assert.True(json["block_consent_banners"]!.GetValue<bool>());
                 Assert.False(json.ContainsKey("html"));
+                Assert.True(JsonNode.DeepEquals(json["audio"], JsonNode.Parse("""{"url":"https://cdn.example.com/audio/intro.mp3"}""")));
             }
             else
             {
                 Assert.Equal("<h1>Hello</h1>", json["html"]!.GetValue<string>());
                 Assert.Equal("Roboto|Open+Sans", json["google_fonts"]!.GetValue<string>());
                 Assert.False(json.ContainsKey("url"));
+                Assert.True(JsonNode.DeepEquals(json["audio"], JsonNode.Parse("""
+                    {"asset_id":"asset_1","source_start_ms":0,"delay_ms":500,"when_audio_ends":"trim_video","error_on_source_invalid":false}
+                    """)));
             }
             return JsonResponse(HttpStatusCode.OK, """
                 {"id":"rec_1","status_url":"https://example.test/v1/recordings/rec_1/status","recording_url":"https://example.test/v1/recording/rec_1.mp4"}
@@ -67,11 +71,20 @@ public class HtmlCssToImageClientRecordingsTests
             ? new CreateUrlRecordingRequest
             {
                 Url = "https://example.com", DurationMs = 2000,
+                Audio = new RecordingUrlAudio { Url = "https://cdn.example.com/audio/intro.mp3" },
                 Headers = new() { ["Authorization"] = "Bearer test" },
                 AdditionalHeaderOrigins = ["https://assets.example.com"],
                 IncludeHeadersOnSubrequests = true, IdentifyAsHcti = false, BlockConsentBanners = true
             }
-            : new CreateHtmlCssRecordingRequest { Html = "<h1>Hello</h1>", GoogleFonts = ["Roboto", "Open Sans"], DurationMs = 2000 };
+            : new CreateHtmlCssRecordingRequest
+            {
+                Html = "<h1>Hello</h1>", GoogleFonts = ["Roboto", "Open Sans"], DurationMs = 2000,
+                Audio = new RecordingAssetAudio
+                {
+                    AssetId = "asset_1", SourceStartMs = 0, DelayMs = 500,
+                    WhenAudioEnds = RecordingAudioEndBehavior.TrimVideo, ErrorOnSourceInvalid = false
+                }
+            };
 
         using var result = await CreateClient().CreateRecordingAsync(request, TestContext.Current.CancellationToken);
         Assert.True(result.Success);

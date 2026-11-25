@@ -117,10 +117,16 @@ public abstract class CreateRecordingCommonOptions : ICreateRecordingRequestBase
     public RecordingAction[]? Actions { get; set; }
 
     /// <summary>
-    /// Output format, frame rate, and scale. Defaults to MP4 at 30 fps. Recordings do not include audio.
+    /// Output format, frame rate, and scale. Defaults to MP4 at 30 fps.
     /// <see href="https://docs.htmlcsstoimage.com/parameters/output/">Read the output documentation for more information.</see>
     /// </summary>
     public RecordingOutputOptions? Output { get; set; }
+
+    /// <summary>
+    /// Optional soundtrack for MP4 or WebM. Use an audio asset from your organization or a public audio URL.
+    /// <see href="https://docs.htmlcsstoimage.com/parameters/audio/">Audio sources and playback options.</see>
+    /// </summary>
+    public RecordingAudio? Audio { get; set; }
 
     /// <summary>
     /// Controls how <see cref="DurationMs"/> limits the timeline. Defaults to <see cref="RecordingDurationMode.AtMost"/>, which stops when actions finish or the requested duration is reached.
